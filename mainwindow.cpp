@@ -47,14 +47,34 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_playBtn_clicked()
 {
-    m_player->setAudioOutput(m_audioOutput);
-    QTableWidgetItem *item = ui->tableWidget->item(current_track, 0);
-    m_player->setSource(QUrl::fromLocalFile(item->text()));
-    //QMediaMetaData data = m_player->metaData();
-    //ui->track_name->setText(m_player->metaData().stringValue(QMediaMetaData::Author));
-    float volume = (ui->volumeSlider->value())/100.0f;
-    m_audioOutput->setVolume(volume);
-    m_player->play();
+    if (onPause)
+    {
+        m_player->setAudioOutput(m_audioOutput);
+        QTableWidgetItem *item = ui->tableWidget->item(current_track, 0);
+        m_player->setSource(QUrl::fromLocalFile(item->text()));
+        //QMediaMetaData data = m_player->metaData();
+        //ui->track_name->setText(m_player->metaData().stringValue(QMediaMetaData::Author));
+        float volume = (ui->volumeSlider->value())/100.0f;
+        m_audioOutput->setVolume(volume);
+        m_player->play();
+        onPause = false;
+        QIcon icon;
+        icon.addFile(QString::fromUtf8(":/new/prefix1/resources/pause.png"), QSize(), QIcon::Normal, QIcon::Off);
+        ui->playBtn->setIcon(icon);
+        ui->playBtn->setIconSize(QSize(50, 50));
+        ui->playBtn->setFlat(false);
+    }
+    else
+    {
+        // Добавить остановку трека
+        QIcon icon;
+        icon.addFile(QString::fromUtf8(":/new/prefix1/resources/play.png"), QSize(), QIcon::Normal, QIcon::Off);
+        ui->playBtn->setIcon(icon);
+        ui->playBtn->setIconSize(QSize(50, 50));
+        ui->playBtn->setFlat(false);
+        onPause = true;
+    }
+
 }
 
 /*void MainWindow::on_actionOpen_File_triggered()

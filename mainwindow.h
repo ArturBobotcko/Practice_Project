@@ -47,5 +47,6 @@ private:
     QMediaPlayer *m_player;
     QAudioOutput* m_audioOutput;
     int current_track; // !!!
+    bool onPause = true;
 };
 #endif // MAINWINDOW_H

@@ -7,10 +7,7 @@
 #include <QFileDialog>
 #include <QDebug>
 #include <QMediaMetaData>
-
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
+#include "ui_mainwindow.h"
 
 class MainWindow : public QMainWindow
 {

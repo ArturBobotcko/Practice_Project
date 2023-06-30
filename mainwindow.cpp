@@ -101,10 +101,7 @@ void MainWindow::on_prevTrackBtn_clicked()
 
 void MainWindow::on_muteBtn_clicked()
 {
-    m_player->stop();
-    QTableWidgetItem *item = ui->tableWidget->item(++current_track, 0);
-    m_player->setSource(QUrl::fromLocalFile(item->text()));
-    m_player->play();
+    m_audioOutput->setVolume(0);
     //QMediaMetaData data = m_player->metaData();
     //ui->track_name->setText(m_player->metaData().stringValue(QMediaMetaData::Author));
     //qDebug() << data.stringValue(QMediaMetaData::Title);
@@ -136,6 +133,9 @@ void MainWindow::on_durationChanged(quint64 position)
 
 void MainWindow::on_nextTrackBtn_clicked()
 {
-
+    m_player->stop();
+    QTableWidgetItem *item = ui->tableWidget->item(++current_track, 0);
+    m_player->setSource(QUrl::fromLocalFile(item->text()));
+    m_player->play();
 }
 

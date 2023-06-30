@@ -121,7 +121,13 @@ void MainWindow::on_prevTrackBtn_clicked()
 {
     m_player->stop();
     QTableWidgetItem *item = ui->tableWidget->item(--current_track, 0);
-    m_player->setSource(QUrl::fromLocalFile(item->text()));
+    if(item)
+    {
+        m_player->setSource(QUrl::fromLocalFile(item->text()));
+    }
+    else
+        return;
+
     m_player->play();
     //QMediaMetaData data = m_player->metaData();
     //ui->track_name->setText(m_player->metaData().stringValue(QMediaMetaData::Author));
@@ -165,7 +171,13 @@ void MainWindow::on_nextTrackBtn_clicked()
 {
     m_player->stop();
     QTableWidgetItem *item = ui->tableWidget->item(++current_track, 0);
-    m_player->setSource(QUrl::fromLocalFile(item->text()));
+    if(item)
+    {
+        m_player->setSource(QUrl::fromLocalFile(item->text()));
+    }
+    else
+        return;
+
     m_player->play();
 }
 

@@ -113,10 +113,9 @@ void MainWindow::on_trackSlider_sliderMoved(int position)
     m_player->setPosition(position);
 }
 
-
 void MainWindow::on_volumeSlider_sliderMoved(int position)
 {
-    m_audioOutput->setVolume(position);
+    m_audioOutput->setVolume(position/100.0f);
 }
 
 void MainWindow::on_positionChanged(quint64 position)

@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include "StyleHelper.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -16,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);  // Включаем выделение строк
     ui->tableWidget->setSelectionMode(QAbstractItemView::SingleSelection); // Разрешаем выделять только одну строку
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->volumeSlider->setValue(50);
     connect(m_player, &QMediaPlayer::metaDataChanged, this, &MainWindow::onMetaDataAvailable);
 }
 
@@ -52,6 +52,8 @@ void MainWindow::on_playBtn_clicked()
     m_player->setSource(QUrl::fromLocalFile(item->text()));
     //QMediaMetaData data = m_player->metaData();
     //ui->track_name->setText(m_player->metaData().stringValue(QMediaMetaData::Author));
+    float volume = (ui->volumeSlider->value())/100.0f;
+    m_audioOutput->setVolume(volume);
     m_player->play();
 }
 

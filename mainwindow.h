@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QMediaMetaData>
 #include "ui_mainwindow.h"
+#include "add_playlist.h"
 
 class MainWindow : public QMainWindow
 {
@@ -41,6 +42,7 @@ private slots:
     void on_durationChanged(quint64 position);
     void onMetaDataAvailable();
     void on_nextTrackBtn_clicked();
+    void on_addPlaylistBtn_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -48,5 +50,6 @@ private:
     QAudioOutput* m_audioOutput;
     int current_track; // !!!
     bool onPause = true;
+    add_playlist* playlist_window = nullptr;
 };
 #endif // MAINWINDOW_H

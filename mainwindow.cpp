@@ -1,10 +1,14 @@
 #include "mainwindow.h"
 #include "StyleHelper.h"
+#include "databasehandler.h"
+#include "ui_add_playlist.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    DataBaseHandler& dbhandler = DataBaseHandler::instance();
+    dbhandler.createDataBase();
     ui->setupUi(this);
     setIntefaceStyle();
     m_player = new QMediaPlayer(this);
@@ -17,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->volumeSlider->setValue(50);
     connect(m_player, &QMediaPlayer::metaDataChanged, this, &MainWindow::onMetaDataAvailable);
+    connect(ui->addPlaylistBtn, &QPushButton::clicked, this, &MainWindow::on_addPlaylistBtn_clicked);
 }
 
 void MainWindow::setIntefaceStyle()
@@ -51,7 +56,13 @@ void MainWindow::on_playBtn_clicked()
     {
         m_player->setAudioOutput(m_audioOutput);
         QTableWidgetItem *item = ui->tableWidget->item(current_track, 0);
-        m_player->setSource(QUrl::fromLocalFile(item->text()));
+        // Если item пустой, то программа падает с ошибкой segmentation fault
+        if(item)
+        {
+            m_player->setSource(QUrl::fromLocalFile(item->text()));
+        }
+        else
+            return;
         //QMediaMetaData data = m_player->metaData();
         //ui->track_name->setText(m_player->metaData().stringValue(QMediaMetaData::Author));
         float volume = (ui->volumeSlider->value())/100.0f;
@@ -66,7 +77,7 @@ void MainWindow::on_playBtn_clicked()
     }
     else
     {
-        // Добавить остановку трека
+        // TODO: Добавить остановку трека
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/new/prefix1/resources/play.png"), QSize(), QIcon::Normal, QIcon::Off);
         ui->playBtn->setIcon(icon);
@@ -156,5 +167,15 @@ void MainWindow::on_nextTrackBtn_clicked()
     QTableWidgetItem *item = ui->tableWidget->item(++current_track, 0);
     m_player->setSource(QUrl::fromLocalFile(item->text()));
     m_player->play();
+}
+
+// Функция вызова окна для добавления плейлиста
+void MainWindow::on_addPlaylistBtn_clicked()
+{
+    if(!playlist_window)
+    {
+        playlist_window = new add_playlist(this);
+    }
+    playlist_window->show();
 }
 

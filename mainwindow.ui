@@ -49,7 +49,7 @@
        <widget class="QTableView" name="tableView"/>
       </item>
       <item row="5" column="0">
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="addPlaylistBtn">
         <property name="text">
          <string>Add</string>
         </property>

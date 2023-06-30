@@ -10,12 +10,14 @@ CONFIG += c++17
 
 SOURCES += \
     StyleHelper.cpp \
+    add_playlist.cpp \
     databasehandler.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     StyleHelper.h \
+    add_playlist.h \
     databasehandler.h \
     mainwindow.h
 
@@ -25,6 +27,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 FORMS += \
+    add_playlist.ui \
     mainwindow.ui
 
 RESOURCES += \

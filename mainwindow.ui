@@ -386,7 +386,7 @@
    </property>
    <widget class="QMenu" name="menuOpen">
     <property name="title">
-     <string>Open</string>
+     <string>Файл</string>
     </property>
     <addaction name="actionOpen_file"/>
    </widget>
@@ -395,7 +395,7 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen_file">
    <property name="text">
-    <string>Open file</string>
+    <string>Открыть файл</string>
    </property>
   </action>
  </widget>

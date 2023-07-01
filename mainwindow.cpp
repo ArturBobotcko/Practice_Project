@@ -1,10 +1,14 @@
 #include "mainwindow.h"
 #include "StyleHelper.h"
+#include "databasehandler.h"
+#include "ui_add_playlist.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    DataBaseHandler& dbhandler = DataBaseHandler::instance();
+    dbhandler.createDataBase();
     ui->setupUi(this);
     setIntefaceStyle();
     m_player = new QMediaPlayer(this);
@@ -21,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_player, &QMediaPlayer::positionChanged, this, &MainWindow::on_trackSlider_valueChanged);
     connect(m_player, &QMediaPlayer::durationChanged, this, &MainWindow::setDuration);
     //connect(ui->playBtn, &QPushButton::clicked, this, &MainWindow::on_playBtn_clicked);
+    connect(ui->addPlaylistBtn, &QPushButton::clicked, this, &MainWindow::on_addPlaylistBtn_clicked);
 }
 
 void MainWindow::setIntefaceStyle()
@@ -50,7 +55,15 @@ void MainWindow::on_playBtn_clicked()
     if (onPause) {
         m_player->setAudioOutput(m_audioOutput);
         QTableWidgetItem *item = ui->tableWidget->item(current_track, 0);
-        m_player->setSource(QUrl::fromLocalFile(item->text()));
+        // Если item пустой, то программа падает с ошибкой segmentation fault
+        if(item)
+        {
+            m_player->setSource(QUrl::fromLocalFile(item->text()));
+        }
+        else
+            return;
+        //QMediaMetaData data = m_player->metaData();
+        //ui->track_name->setText(m_player->metaData().stringValue(QMediaMetaData::Author));
         float volume = (ui->volumeSlider->value())/100.0f;
         m_audioOutput->setVolume(volume);
         m_player->setPosition(pause_position);
@@ -62,7 +75,9 @@ void MainWindow::on_playBtn_clicked()
         ui->playBtn->setIcon(icon);
         ui->playBtn->setIconSize(QSize(50, 50));
         ui->playBtn->setFlat(false);
-    } else {
+    }
+    else
+    {
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/new/prefix1/resources/play.png"), QSize(), QIcon::Normal, QIcon::Off);
         ui->playBtn->setIcon(icon);
@@ -101,8 +116,13 @@ void MainWindow::on_prevTrackBtn_clicked()
         current_track = ui->tableWidget->rowCount();
     }
     QTableWidgetItem *item = ui->tableWidget->item(--current_track, 0);
-    m_player->setSource(QUrl::fromLocalFile(item->text()));
     ui->tableWidget->selectRow(current_track);
+    if(item)
+    {
+        m_player->setSource(QUrl::fromLocalFile(item->text()));
+    }
+    else
+        return;
     m_player->play();
 }
 
@@ -134,7 +154,12 @@ void MainWindow::on_nextTrackBtn_clicked()
         current_track = -1; // i`m sorry 4 being so stupid
     }
     QTableWidgetItem *item = ui->tableWidget->item(++current_track, 0);
-    m_player->setSource(QUrl::fromLocalFile(item->text()));
+    if (item)
+    {
+        m_player->setSource(QUrl::fromLocalFile(item->text()));
+    }
+    else
+        return;
     ui->tableWidget->selectRow(current_track);
     m_player->play();
 }
@@ -144,3 +169,14 @@ void MainWindow::on_trackSlider_valueChanged(int value)
     ui->trackSlider->setValue(value);
     current_position = value;
 }
+
+// Функция вызова окна для добавления плейлиста
+void MainWindow::on_addPlaylistBtn_clicked()
+{
+    if(!playlist_window)
+    {
+        playlist_window = new add_playlist(this);
+    }
+    playlist_window->show();
+}
+

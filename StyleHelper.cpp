@@ -17,7 +17,7 @@ QString StyleHelper::setButtonStyle()
 
 void StyleHelper::setBackgroundStyle(Ui::MainWindow *ui)
 {
-	ui->centralwidget->setStyleSheet("background-color: rgb(230, 230, 250); ");
+    ui->centralwidget->setStyleSheet("background-color: rgb(230, 230, 250); ");
 }
 
 QString StyleHelper::setSliderStyle()

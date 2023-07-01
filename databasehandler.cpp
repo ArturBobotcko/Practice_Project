@@ -79,15 +79,22 @@ bool DataBaseHandler::addPlaylist(const QString& playlist_name)
 // Функция удаления записи из таблицы
 void DataBaseHandler::deletePlaylist(const QString &playlist_name)
 {
-    QSqlQuery query;
-    QString deleteQuery = QString("DELETE FROM Playlists WHERE playlist_name = '%1'").arg(playlist_name);
-    if(!query.exec(deleteQuery))
+    if (playlist_name != "")
     {
-        qDebug() << "Unable to delete playlist from 'Playlists' table: " + query.lastError().text();
+        QSqlQuery query;
+        QString deleteQuery = QString("DELETE FROM Playlists WHERE playlist_name = '%1'").arg(playlist_name);
+        if(!query.exec(deleteQuery))
+        {
+            qDebug() << "Unable to delete playlist from 'Playlists' table: " + query.lastError().text();
+        }
+        else
+        {
+            qDebug() << "Playlist " << playlist_name << " deleted!";
+        }
     }
     else
     {
-        qDebug() << "Playlist " << playlist_name << " deleted!";
+        qDebug() << "Unable to delete playlist with empty name";
     }
 }
 

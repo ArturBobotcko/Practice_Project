@@ -34,10 +34,7 @@ private slots:
     void on_trackSlider_valueChanged(int value);
     void setDuration();
     void on_addPlaylistBtn_clicked();
-
-
     void on_deleteBtn_clicked();
-
     void on_playlist_list_cellClicked(int row, int column);
 
 private:

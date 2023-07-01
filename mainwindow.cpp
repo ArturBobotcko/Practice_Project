@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "StyleHelper.h"
 #include "databasehandler.h"
-#include "ui_add_playlist.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -26,8 +25,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_player, &QMediaPlayer::metaDataChanged, this, &MainWindow::onMetaDataAvailable);
     connect(m_player, &QMediaPlayer::positionChanged, this, &MainWindow::on_trackSlider_valueChanged);
     connect(m_player, &QMediaPlayer::durationChanged, this, &MainWindow::setDuration);
-    //connect(ui->playBtn, &QPushButton::clicked, this, &MainWindow::on_playBtn_clicked);
-    //connect(ui->addPlaylistBtn, &QPushButton::clicked, this, &MainWindow::on_addPlaylistBtn_clicked);
 }
 
 void MainWindow::setIntefaceStyle()
@@ -126,7 +123,6 @@ void MainWindow::on_addTracks_clicked()
     }
 }
 
-
 void MainWindow::on_stopTrackBtn_clicked()
 {
     m_player->stop();
@@ -203,6 +199,7 @@ void MainWindow::on_addPlaylistBtn_clicked()
     playlist_window->show();
 }
 
+// Функция удаления плейлиста по кнопке
 void MainWindow::on_deleteBtn_clicked()
 {
     qDebug() << selectedPlaylist;
@@ -212,15 +209,14 @@ void MainWindow::on_deleteBtn_clicked()
         ui->playlist_list->removeRow(rowOnDelete);
     }
     selectedPlaylist = "";
-// Добавить удаления записи из БД
 }
 
-
+// Функция выбора имени плейлиста по клику на него
 void MainWindow::on_playlist_list_cellClicked(int row, int column)
 {
     QString value = ui->playlist_list->item(row, column)->text();
-    //qDebug() << value;
     selectedPlaylist = value;
     rowOnDelete = row;
+    // Добавить вывод треков в правую таблицу
 }
 

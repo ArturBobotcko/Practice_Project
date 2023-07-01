@@ -10,7 +10,6 @@
 #include <QSqlQuery>
 #include <QSqlTableModel>
 
-
 namespace Ui {
 class add_playlist;
 }

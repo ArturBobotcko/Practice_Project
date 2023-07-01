@@ -79,12 +79,12 @@
           </property>
           <property name="icon">
            <iconset resource="MainWindowResources.qrc">
-            <normaloff>:/new/prefix1/resources/stop.png</normaloff>:/new/prefix1/resources/stop.png</iconset>
+            <normaloff>:/new/prefix1/resources/stop.svg</normaloff>:/new/prefix1/resources/stop.svg</iconset>
           </property>
           <property name="iconSize">
            <size>
-            <width>35</width>
-            <height>35</height>
+            <width>25</width>
+            <height>25</height>
            </size>
           </property>
           <property name="flat">
@@ -114,7 +114,7 @@
           </property>
           <property name="icon">
            <iconset resource="MainWindowResources.qrc">
-            <normaloff>:/new/prefix1/resources/prev.png</normaloff>:/new/prefix1/resources/prev.png</iconset>
+            <normaloff>:/new/prefix1/resources/back.svg</normaloff>:/new/prefix1/resources/back.svg</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -158,7 +158,7 @@
           </property>
           <property name="icon">
            <iconset resource="MainWindowResources.qrc">
-            <normaloff>:/new/prefix1/resources/play.png</normaloff>:/new/prefix1/resources/play.png</iconset>
+            <normaloff>:/new/prefix1/resources/play.svg</normaloff>:/new/prefix1/resources/play.svg</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -190,7 +190,7 @@
           </property>
           <property name="icon">
            <iconset resource="MainWindowResources.qrc">
-            <normaloff>:/new/prefix1/resources/next.png</normaloff>:/new/prefix1/resources/next.png</iconset>
+            <normaloff>:/new/prefix1/resources/forward.svg</normaloff>:/new/prefix1/resources/forward.svg</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -219,7 +219,7 @@
           </property>
           <property name="icon">
            <iconset resource="MainWindowResources.qrc">
-            <normaloff>:/new/prefix1/resources/loudspeaker.png</normaloff>:/new/prefix1/resources/loudspeaker.png</iconset>
+            <normaloff>:/new/prefix1/resources/mid-volume.svg</normaloff>:/new/prefix1/resources/mid-volume.svg</iconset>
           </property>
           <property name="iconSize">
            <size>

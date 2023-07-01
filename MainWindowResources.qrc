@@ -1,15 +1,14 @@
 <RCC>
     <qresource prefix="/new/prefix1">
-        <file>resources/equalizer.png</file>
-        <file>resources/hd.png</file>
-        <file>resources/loudspeaker.png</file>
-        <file>resources/minus.png</file>
-        <file>resources/mute.png</file>
-        <file>resources/next.png</file>
-        <file>resources/pause.png</file>
-        <file>resources/play.png</file>
-        <file>resources/plus.png</file>
-        <file>resources/prev.png</file>
-        <file>resources/stop.png</file>
+        <file>resources/back.svg</file>
+        <file>resources/forward.svg</file>
+        <file>resources/high-volume.svg</file>
+        <file>resources/low-volume.svg</file>
+        <file>resources/muted-volume.svg</file>
+        <file>resources/pause.svg</file>
+        <file>resources/play.svg</file>
+        <file>resources/add.svg</file>
+        <file>resources/mid-volume.svg</file>
+        <file>resources/stop.svg</file>
     </qresource>
 </RCC>

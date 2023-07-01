@@ -91,7 +91,7 @@ void MainWindow::on_playBtn_clicked()
         m_player->play();
         onPause = false;
         QIcon icon;
-        icon.addFile(QString::fromUtf8(":/new/prefix1/resources/pause.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QString::fromUtf8(":/new/prefix1/resources/pause.svg"), QSize(), QIcon::Normal, QIcon::Off);
         ui->playBtn->setIcon(icon);
         ui->playBtn->setIconSize(QSize(50, 50));
         ui->playBtn->setFlat(false);
@@ -99,7 +99,7 @@ void MainWindow::on_playBtn_clicked()
     else
     {
         QIcon icon;
-        icon.addFile(QString::fromUtf8(":/new/prefix1/resources/play.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QString::fromUtf8(":/new/prefix1/resources/play.svg"), QSize(), QIcon::Normal, QIcon::Off);
         ui->playBtn->setIcon(icon);
         ui->playBtn->setIconSize(QSize(50, 50));
         ui->playBtn->setFlat(false);
@@ -163,7 +163,31 @@ void MainWindow::on_trackSlider_sliderMoved(int position)
 
 void MainWindow::on_volumeSlider_sliderMoved(int position)
 {
-    m_audioOutput->setVolume(position/100.0f);
+    float volume = position/100.0f;
+    QIcon high_vol_icon, mid_vol_icon, low_vol_icon, muted_vol_icon;
+    high_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/high-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    mid_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/mid-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    low_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/low-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    muted_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/muted-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    ui->muteBtn->setIconSize(QSize(25, 25));
+    ui->muteBtn->setFlat(false);
+    if (position < 100 && position >= 75)
+    {
+        ui->muteBtn->setIcon(high_vol_icon);
+    }
+    else if (position < 75 && position >= 25)
+    {
+        ui->muteBtn->setIcon(mid_vol_icon);
+    }
+    else if (position < 25 && position != 0)
+    {
+        ui->muteBtn->setIcon(low_vol_icon);
+    }
+    else if (position == 0)
+    {
+        ui->muteBtn->setIcon(muted_vol_icon);
+    }
+    m_audioOutput->setVolume(volume);
 }
 
 void MainWindow::on_nextTrackBtn_clicked()

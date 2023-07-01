@@ -48,5 +48,7 @@ private:
     add_playlist* playlist_window = nullptr;
     QString selectedPlaylist;
     int rowOnDelete;
+    int current_volume;
+    bool muted = false;
 };
 #endif // MAINWINDOW_H

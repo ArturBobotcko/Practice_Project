@@ -152,8 +152,37 @@ void MainWindow::setDuration()
 
 void MainWindow::on_muteBtn_clicked()
 {
-    m_audioOutput->setVolume(0);
-    ui->volumeSlider->setValue(0);
+    QIcon high_vol_icon, mid_vol_icon, low_vol_icon, muted_vol_icon;
+    high_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/high-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    mid_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/mid-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    low_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/low-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    muted_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/muted-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    if (!muted)
+    {
+        current_volume = ui->volumeSlider->value();
+        ui->muteBtn->setIcon(muted_vol_icon);
+        m_audioOutput->setVolume(0);
+        ui->volumeSlider->setValue(0);
+        muted = true;
+    }
+    else
+    {
+        if (current_volume < 100 && current_volume >= 75)
+        {
+            ui->muteBtn->setIcon(high_vol_icon);
+        }
+        else if (current_volume < 75 && current_volume >= 25)
+        {
+            ui->muteBtn->setIcon(mid_vol_icon);
+        }
+        else if (current_volume < 25 && current_volume != 0)
+        {
+            ui->muteBtn->setIcon(low_vol_icon);
+        }
+        m_audioOutput->setVolume(current_volume/100.0f);
+        ui->volumeSlider->setValue(current_volume);
+        muted = false;
+    }
 }
 
 void MainWindow::on_trackSlider_sliderMoved(int position)

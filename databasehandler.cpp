@@ -9,6 +9,17 @@ DataBaseHandler& DataBaseHandler::instance()
     return instance;
 }
 
+// Функция присоединения к базе данных
+void DataBaseHandler::connectToDataBase(QSqlDatabase db)
+{
+    if(!db.open())
+    {
+        qDebug() << "Unable to connect to database: " << db.lastError().text();
+        return;
+    }
+    qDebug() << "Database connected!";
+}
+
 // Функция создает базу данных
 void DataBaseHandler::createDataBase()
 {
@@ -38,17 +49,6 @@ void DataBaseHandler::createDataBase()
     db.close();
 }
 
-// Функция присоединения к базе данных
-void DataBaseHandler::connectToDataBase(QSqlDatabase db)
-{
-    if(!db.open())
-    {
-        qDebug() << "Unable to connect to database: " << db.lastError().text();
-        return;
-    }
-    qDebug() << "Database connected!";
-}
-
 // Функция добавления плейлиста в таблицу
 // true - плейлист был добавлен, false - не был
 bool DataBaseHandler::addPlaylist(const QString& playlist_name)
@@ -75,20 +75,38 @@ bool DataBaseHandler::addPlaylist(const QString& playlist_name)
     }
     db.close();
 }
-/*void refreshPlaylists(QSqlDatabase db) {
-    connectToDataBase(db);
-    QSqlQuery query(db);
-    query.exec("SELECT * FROM Playlists");  // Замените my_table на имя вашей таблицы
 
-    tableWidget_list->setRowCount(query.size());
-    tableWidget_list->setColumnCount(query.record().count());
-
-    int i = 0;
-    while (query.next()) {
-        for (int j = 0; j < query.record().count(); ++j) {
-            QTableWidgetItem *item = new QTableWidgetItem(query.value(j).toString());
-            tableWidget_list->setItem(i, j, item);
+// Функция удаления записи из таблицы
+void DataBaseHandler::deletePlaylist(const QString &playlist_name)
+{
+    if (playlist_name != "")
+    {
+        QSqlQuery query;
+        QString deleteQuery = QString("DELETE FROM Playlists WHERE playlist_name = '%1'").arg(playlist_name);
+        if(!query.exec(deleteQuery))
+        {
+            qDebug() << "Unable to delete playlist from 'Playlists' table: " + query.lastError().text();
         }
-        ++i;
+        else
+        {
+            qDebug() << "Playlist " << playlist_name << " deleted!";
+        }
     }
-}*/
+    else
+    {
+        qDebug() << "Unable to delete playlist with empty name";
+    }
+}
+
+// Функция получения списка всех плейлистов из БД
+QSqlQueryModel* DataBaseHandler::getPlaylists()
+{
+    connectToDataBase(db);
+    QSqlQueryModel* query = new QSqlQueryModel();
+    query->setQuery("SELECT * FROM Playlists");
+    if(query->lastError().isValid())
+    {
+        qDebug() << "Unable to select from 'Playlists' table: " + query->lastError().text();
+    }
+    return query;
+}

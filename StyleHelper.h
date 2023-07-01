@@ -1,17 +1,18 @@
 #pragma once
 
 #include <QString>
-#include "ui_mainwindow.h"
+
+class Ui_MainWindow;
 
 class StyleHelper
 {
 public:
     static QString setButtonStyle();
-    static void setBackgroundStyle(Ui::MainWindow* ui);
+    static void setBackgroundStyle(Ui_MainWindow* ui);
 	static QString setSliderStyle();
-	static void setAllButtonsStyle(Ui::MainWindow* ui);
-	static void setAllSlidersStyle(Ui::MainWindow* ui);
-	static void setLablesStyle(Ui::MainWindow* ui);
+    static void setAllButtonsStyle(Ui_MainWindow* ui);
+    static void setAllSlidersStyle(Ui_MainWindow* ui);
+    static void setLablesStyle(Ui_MainWindow* ui);
 	static QString setplaylestsLabelStyle();
 };
 

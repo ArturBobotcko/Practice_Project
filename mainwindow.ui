@@ -15,126 +15,6 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="0" colspan="2">
-       <widget class="QLabel" name="playlestsLabel">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>300</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Lucida Handwriting</family>
-          <pointsize>18</pointsize>
-         </font>
-        </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">backGround-color:red</string>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::Box</enum>
-        </property>
-        <property name="text">
-         <string>Ваши плейлисты</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QPushButton" name="addPlaylistBtn">
-        <property name="text">
-         <string>Add</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QTableWidget" name="tableWidget">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="font">
-         <font>
-          <family>Segoe Print</family>
-         </font>
-        </property>
-        <property name="cursor" stdset="0">
-         <cursorShape>ArrowCursor</cursorShape>
-        </property>
-        <column>
-         <property name="text">
-          <string>Путь</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Название</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Исполнитель</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Длительность</string>
-         </property>
-        </column>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QFrame" name="frame">
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QTableWidget" name="tableWidget_list">
-           <property name="columnCount">
-            <number>1</number>
-           </property>
-           <column/>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QPushButton" name="addTracks">
-        <property name="text">
-         <string>PushButton</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QPushButton" name="pushButton_2">
-        <property name="text">
-         <string>Delete</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
     <item row="1" column="0">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
@@ -159,6 +39,9 @@
         </property>
         <property name="maximum">
          <number>100000</number>
+        </property>
+        <property name="pageStep">
+         <number>2000</number>
         </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -199,12 +82,12 @@
           </property>
           <property name="icon">
            <iconset resource="MainWindowResources.qrc">
-            <normaloff>:/new/prefix1/resources/stop.png</normaloff>:/new/prefix1/resources/stop.png</iconset>
+            <normaloff>:/new/prefix1/resources/stop.svg</normaloff>:/new/prefix1/resources/stop.svg</iconset>
           </property>
           <property name="iconSize">
            <size>
-            <width>35</width>
-            <height>35</height>
+            <width>25</width>
+            <height>25</height>
            </size>
           </property>
           <property name="flat">
@@ -234,7 +117,7 @@
           </property>
           <property name="icon">
            <iconset resource="MainWindowResources.qrc">
-            <normaloff>:/new/prefix1/resources/prev.png</normaloff>:/new/prefix1/resources/prev.png</iconset>
+            <normaloff>:/new/prefix1/resources/back.svg</normaloff>:/new/prefix1/resources/back.svg</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -278,7 +161,7 @@
           </property>
           <property name="icon">
            <iconset resource="MainWindowResources.qrc">
-            <normaloff>:/new/prefix1/resources/play.png</normaloff>:/new/prefix1/resources/play.png</iconset>
+            <normaloff>:/new/prefix1/resources/play.svg</normaloff>:/new/prefix1/resources/play.svg</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -310,7 +193,7 @@
           </property>
           <property name="icon">
            <iconset resource="MainWindowResources.qrc">
-            <normaloff>:/new/prefix1/resources/next.png</normaloff>:/new/prefix1/resources/next.png</iconset>
+            <normaloff>:/new/prefix1/resources/forward.svg</normaloff>:/new/prefix1/resources/forward.svg</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -339,7 +222,7 @@
           </property>
           <property name="icon">
            <iconset resource="MainWindowResources.qrc">
-            <normaloff>:/new/prefix1/resources/loudspeaker.png</normaloff>:/new/prefix1/resources/loudspeaker.png</iconset>
+            <normaloff>:/new/prefix1/resources/mid-volume.svg</normaloff>:/new/prefix1/resources/mid-volume.svg</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -363,6 +246,9 @@
           <property name="cursor">
            <cursorShape>PointingHandCursor</cursorShape>
           </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -385,6 +271,113 @@
       </item>
      </layout>
     </item>
+    <item row="0" column="0">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QPushButton" name="addTracks">
+        <property name="text">
+         <string>PushButton</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QTableWidget" name="tableWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <family>Segoe Print</family>
+         </font>
+        </property>
+        <property name="cursor" stdset="0">
+         <cursorShape>ArrowCursor</cursorShape>
+        </property>
+        <column>
+         <property name="text">
+          <string>Путь</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Название</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Исполнитель</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Длительность</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QLabel" name="playlistsLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Lucida Handwriting</family>
+          <pointsize>18</pointsize>
+         </font>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">backGround-color:red</string>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::Box</enum>
+        </property>
+        <property name="text">
+         <string>Ваши плейлисты</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QPushButton" name="deleteBtn">
+        <property name="text">
+         <string>Удалить плейлист</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QTableWidget" name="playlist_list">
+        <property name="columnCount">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QPushButton" name="addPlaylistBtn">
+        <property name="text">
+         <string>Создать плейлист</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -398,7 +391,7 @@
    </property>
    <widget class="QMenu" name="menuOpen">
     <property name="title">
-     <string>Open</string>
+     <string>Файл</string>
     </property>
     <addaction name="actionOpen_file"/>
    </widget>
@@ -407,7 +400,7 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen_file">
    <property name="text">
-    <string>Open file</string>
+    <string>Открыть файл</string>
    </property>
   </action>
  </widget>

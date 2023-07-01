@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "StyleHelper.h"
 #include "databasehandler.h"
-#include "ui_add_playlist.h"
+#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     dbhandler.createDataBase();
     ui->setupUi(this);
     setIntefaceStyle();
+    insertPlaylists();
 
     m_player = new QMediaPlayer(this);
     m_audioOutput = new QAudioOutput(this);
@@ -29,7 +30,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_player, &QMediaPlayer::metaDataChanged, this, &MainWindow::onMetaDataAvailable);
     connect(m_player, &QMediaPlayer::positionChanged, this, &MainWindow::on_trackSlider_valueChanged);
     connect(m_player, &QMediaPlayer::durationChanged, this, &MainWindow::setDuration);
-    //connect(ui->playBtn, &QPushButton::clicked, this, &MainWindow::on_playBtn_clicked);
     connect(ui->addPlaylistBtn, &QPushButton::clicked, this, &MainWindow::on_addPlaylistBtn_clicked);
     connect(ui->tableWidget, &QTableWidget::cellDoubleClicked, this, &MainWindow::cellDoubleClicked);
 }
@@ -60,6 +60,26 @@ void MainWindow::cellDoubleClicked(int iRow, int iColumn)
     current_track = iRow;
     playTrack();
 }
+// Функция вставки списка плейлистов в виджет таблицы
+void MainWindow::insertPlaylists()
+{
+    QSqlQueryModel* playlists = DataBaseHandler::instance().getPlaylists();
+    ui->playlist_list->setRowCount(playlists->rowCount());
+    ui->playlist_list->setColumnCount(1);
+    ui->playlist_list->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    QStringList headerLabels;
+    headerLabels << "Название плейлиста";
+    ui->playlist_list->setHorizontalHeaderLabels(headerLabels);
+    for (int row = 0; row < playlists->rowCount(); ++row)
+    {
+        QString playlist_name = playlists->record(row).value("playlist_name").toString();
+        qDebug() << playlist_name;
+        QTableWidgetItem* item = new QTableWidgetItem(playlist_name);
+        ui->playlist_list->setItem(row, 0, item);
+
+    }
+    delete playlists;
+}
 
 void MainWindow::onMetaDataAvailable()
 {
@@ -73,28 +93,31 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete m_player;
+    delete m_audioOutput;
+    delete playlist_window;
 }
 
 void MainWindow::on_playBtn_clicked()
 {
     if (onPause) {
         QIcon icon;
-        icon.addFile(QString::fromUtf8(":/new/prefix1/resources/pause.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QString::fromUtf8(":/new/prefix1/resources/pause.svg"), QSize(), QIcon::Normal, QIcon::Off);
         ui->playBtn->setIcon(icon);
         ui->playBtn->setIconSize(QSize(50, 50));
         ui->playBtn->setFlat(false);
+        m_player->setPosition(pause_position);
         playTrack();
         onPause = false;
     }
     else
     {
         QIcon icon;
-        icon.addFile(QString::fromUtf8(":/new/prefix1/resources/play.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QString::fromUtf8(":/new/prefix1/resources/play.svg"), QSize(), QIcon::Normal, QIcon::Off);
         ui->playBtn->setIcon(icon);
         ui->playBtn->setIconSize(QSize(50, 50));
         ui->playBtn->setFlat(false);
-        m_player->stop();
         pause_position = current_position;
+        m_player->stop();
         ui->trackSlider->setValue(pause_position);
         onPause = true;
     }
@@ -136,8 +159,37 @@ void MainWindow::setDuration()
 
 void MainWindow::on_muteBtn_clicked()
 {
-    m_audioOutput->setVolume(0);
-    ui->volumeSlider->setValue(0);
+    QIcon high_vol_icon, mid_vol_icon, low_vol_icon, muted_vol_icon;
+    high_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/high-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    mid_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/mid-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    low_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/low-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    muted_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/muted-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    if (!muted)
+    {
+        current_volume = ui->volumeSlider->value();
+        ui->muteBtn->setIcon(muted_vol_icon);
+        m_audioOutput->setVolume(0);
+        ui->volumeSlider->setValue(0);
+        muted = true;
+    }
+    else
+    {
+        if (current_volume < 100 && current_volume >= 75)
+        {
+            ui->muteBtn->setIcon(high_vol_icon);
+        }
+        else if (current_volume < 75 && current_volume >= 25)
+        {
+            ui->muteBtn->setIcon(mid_vol_icon);
+        }
+        else if (current_volume < 25 && current_volume != 0)
+        {
+            ui->muteBtn->setIcon(low_vol_icon);
+        }
+        m_audioOutput->setVolume(current_volume/100.0f);
+        ui->volumeSlider->setValue(current_volume);
+        muted = false;
+    }
 }
 
 void MainWindow::on_trackSlider_sliderMoved(int position)
@@ -147,7 +199,31 @@ void MainWindow::on_trackSlider_sliderMoved(int position)
 
 void MainWindow::on_volumeSlider_sliderMoved(int position)
 {
-    m_audioOutput->setVolume(position/100.0f);
+    float volume = position/100.0f;
+    QIcon high_vol_icon, mid_vol_icon, low_vol_icon, muted_vol_icon;
+    high_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/high-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    mid_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/mid-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    low_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/low-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    muted_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/muted-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    ui->muteBtn->setIconSize(QSize(25, 25));
+    ui->muteBtn->setFlat(false);
+    if (position < 100 && position >= 75)
+    {
+        ui->muteBtn->setIcon(high_vol_icon);
+    }
+    else if (position < 75 && position >= 25)
+    {
+        ui->muteBtn->setIcon(mid_vol_icon);
+    }
+    else if (position < 25 && position != 0)
+    {
+        ui->muteBtn->setIcon(low_vol_icon);
+    }
+    else if (position == 0)
+    {
+        ui->muteBtn->setIcon(muted_vol_icon);
+    }
+    m_audioOutput->setVolume(volume);
 }
 
 void MainWindow::on_trackSlider_valueChanged(int value)
@@ -164,4 +240,53 @@ void MainWindow::on_addPlaylistBtn_clicked()
         playlist_window = new add_playlist(this);
     }
     playlist_window->show();
+}
+
+// Функция удаления плейлиста по кнопке
+void MainWindow::on_deleteBtn_clicked()
+{
+    qDebug() << selectedPlaylist;
+    DataBaseHandler::instance().deletePlaylist(selectedPlaylist);
+    if (selectedPlaylist != "")
+    {
+        ui->playlist_list->removeRow(rowOnDelete);
+    }
+    selectedPlaylist.clear();
+}
+
+// Функция выбора имени плейлиста по клику на него
+void MainWindow::on_playlist_list_cellClicked(int row, int column)
+{
+    QString value = ui->playlist_list->item(row, column)->text();
+    selectedPlaylist = value;
+    rowOnDelete = row;
+}
+
+void MainWindow::on_volumeSlider_valueChanged(int value)
+{
+    float volume = value/100.0f;
+    QIcon high_vol_icon, mid_vol_icon, low_vol_icon, muted_vol_icon;
+    high_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/high-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    mid_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/mid-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    low_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/low-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    muted_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/muted-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    ui->muteBtn->setIconSize(QSize(25, 25));
+    ui->muteBtn->setFlat(false);
+    if (value < 100 && value >= 75)
+    {
+        ui->muteBtn->setIcon(high_vol_icon);
+    }
+    else if (value < 75 && value >= 25)
+    {
+        ui->muteBtn->setIcon(mid_vol_icon);
+    }
+    else if (value < 25 && value != 0)
+    {
+        ui->muteBtn->setIcon(low_vol_icon);
+    }
+    else if (value == 0)
+    {
+        ui->muteBtn->setIcon(muted_vol_icon);
+    }
+    m_audioOutput->setVolume(volume);
 }

@@ -23,23 +23,23 @@ public:
     void insertPlaylists();
 
 private slots:
-    void on_playBtn_clicked();
-    void on_addTracks_clicked();
-    void on_stopTrackBtn_clicked();
-    void on_prevTrackBtn_clicked();
-    void on_muteBtn_clicked();
-    void on_trackSlider_sliderMoved(int position);
-    void on_volumeSlider_sliderMoved(int position);
+    void playBtn_clicked();
+    void stopTrackBtn_clicked();
+    void prevTrackBtn_clicked();
+    void nextTrackBtn_clicked();
+    void muteBtn_clicked();
+    void addTracks_clicked();
+    void addPlaylistBtn_clicked();
+    void deleteBtn_clicked();
+    void trackSlider_sliderMoved(int position);
+    void volumeSlider_sliderMoved(int position);
     void onMetaDataAvailable();
-    void on_nextTrackBtn_clicked();
-    void on_trackSlider_valueChanged(int value);
+    void trackSlider_valueChanged(int value);
     void setDuration();
-    void on_addPlaylistBtn_clicked();
     void cellDoubleClicked(int iRow, int iColumn);
     void playTrack();
-    void on_deleteBtn_clicked();
-    void on_playlist_list_cellClicked(int row, int column);
-    void on_volumeSlider_valueChanged(int value);
+    void playlist_list_cellClicked(int row, int column);
+    void volumeSlider_valueChanged(int value);
 
 private:
     Ui_MainWindow *ui;

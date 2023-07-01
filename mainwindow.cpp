@@ -4,8 +4,7 @@
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     DataBaseHandler& dbhandler = DataBaseHandler::instance();
     dbhandler.createDataBase();
@@ -21,17 +20,34 @@ MainWindow::MainWindow(QWidget *parent)
     pause_position = 0;
     current_position = 0;
     onPause = true;
-    ui->tableWidget->setColumnCount(4);
+
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->volumeSlider->setValue(50);
+
     connect(m_player, &QMediaPlayer::metaDataChanged, this, &MainWindow::onMetaDataAvailable);
-    connect(m_player, &QMediaPlayer::positionChanged, this, &MainWindow::on_trackSlider_valueChanged);
+    connect(m_player, &QMediaPlayer::positionChanged, this, &MainWindow::trackSlider_valueChanged);
     connect(m_player, &QMediaPlayer::durationChanged, this, &MainWindow::setDuration);
-    connect(ui->addPlaylistBtn, &QPushButton::clicked, this, &MainWindow::on_addPlaylistBtn_clicked);
+
     connect(ui->tableWidget, &QTableWidget::cellDoubleClicked, this, &MainWindow::cellDoubleClicked);
+    connect(ui->playlist_list, &QTableWidget::cellClicked, this, &MainWindow::playlist_list_cellClicked);
+
+    connect(ui->playBtn, &QPushButton::clicked, this, &MainWindow::playBtn_clicked);
+    connect(ui->addPlaylistBtn, &QPushButton::clicked, this, &MainWindow::addPlaylistBtn_clicked);
+    connect(ui->addTracks, &QPushButton::clicked, this, &MainWindow::addTracks_clicked);
+    connect(ui->stopTrackBtn, &QPushButton::clicked, this, &MainWindow::stopTrackBtn_clicked);
+    connect(ui->prevTrackBtn, &QPushButton::clicked, this, &MainWindow::prevTrackBtn_clicked);
+    connect(ui->muteBtn, &QPushButton::clicked, this, &MainWindow::muteBtn_clicked);
+    connect(ui->nextTrackBtn, &QPushButton::clicked, this, &MainWindow::nextTrackBtn_clicked);
+    connect(ui->addPlaylistBtn, &QPushButton::clicked, this, &MainWindow::addPlaylistBtn_clicked);
+    connect(ui->deleteBtn, &QPushButton::clicked, this, &MainWindow::deleteBtn_clicked);
+
+    connect(ui->trackSlider, &QSlider::sliderMoved, this, &MainWindow::trackSlider_sliderMoved);
+    connect(ui->volumeSlider, &QSlider::sliderMoved, this, &MainWindow::volumeSlider_sliderMoved);
+    connect(ui->trackSlider, &QSlider::valueChanged, this, &MainWindow::trackSlider_valueChanged);
+    connect(ui->volumeSlider, &QSlider::valueChanged, this, &MainWindow::volumeSlider_valueChanged);
 }
 
 void MainWindow::playTrack()
@@ -39,11 +55,10 @@ void MainWindow::playTrack()
     m_player->stop();
     ui->tableWidget->selectRow(current_track);
     QTableWidgetItem *item = ui->tableWidget->item(current_track, 0);
-    if (item) {
-        m_player->setSource(QUrl::fromLocalFile(item->text()));
-    } else {
+    if (!item) {
         return;
     }
+    m_player->setSource(QUrl::fromLocalFile(item->text()));
     m_player->play();
 }
 
@@ -97,7 +112,7 @@ MainWindow::~MainWindow()
     delete playlist_window;
 }
 
-void MainWindow::on_playBtn_clicked()
+void MainWindow::playBtn_clicked()
 {
     if (onPause) {
         QIcon icon;
@@ -123,7 +138,7 @@ void MainWindow::on_playBtn_clicked()
     }
 }
 
-void MainWindow::on_addTracks_clicked()
+void MainWindow::addTracks_clicked()
 {
     QFileDialog dialog(this);
     dialog.setFileMode(QFileDialog::AnyFile);
@@ -135,19 +150,25 @@ void MainWindow::on_addTracks_clicked()
     }
 }
 
-void MainWindow::on_stopTrackBtn_clicked()
+void MainWindow::stopTrackBtn_clicked()
 {
     m_player->stop();
 }
 
-void MainWindow::on_prevTrackBtn_clicked()
+void MainWindow::prevTrackBtn_clicked()
 {
+    if (current_track == 0) {
+        current_track = ui->tableWidget->rowCount();
+    }
     --current_track;
     playTrack();
 }
 
-void MainWindow::on_nextTrackBtn_clicked()
+void MainWindow::nextTrackBtn_clicked()
 {
+    if (current_track == ui->tableWidget->rowCount() - 1) {
+        current_track = -1; // i`m stupud but i`m free
+    }
     ++current_track;
     playTrack();
 }
@@ -157,7 +178,7 @@ void MainWindow::setDuration()
     ui->trackSlider->setMaximum(m_player->duration());
 }
 
-void MainWindow::on_muteBtn_clicked()
+void MainWindow::muteBtn_clicked()
 {
     QIcon high_vol_icon, mid_vol_icon, low_vol_icon, muted_vol_icon;
     high_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/high-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
@@ -192,12 +213,12 @@ void MainWindow::on_muteBtn_clicked()
     }
 }
 
-void MainWindow::on_trackSlider_sliderMoved(int position)
+void MainWindow::trackSlider_sliderMoved(int position)
 {
     m_player->setPosition(position);
 }
 
-void MainWindow::on_volumeSlider_sliderMoved(int position)
+void MainWindow::volumeSlider_sliderMoved(int position)
 {
     float volume = position/100.0f;
     QIcon high_vol_icon, mid_vol_icon, low_vol_icon, muted_vol_icon;
@@ -226,14 +247,14 @@ void MainWindow::on_volumeSlider_sliderMoved(int position)
     m_audioOutput->setVolume(volume);
 }
 
-void MainWindow::on_trackSlider_valueChanged(int value)
+void MainWindow::trackSlider_valueChanged(int value)
 {
     ui->trackSlider->setValue(value);
     current_position = value;
 }
 
 // Функция вызова окна для добавления плейлиста
-void MainWindow::on_addPlaylistBtn_clicked()
+void MainWindow::addPlaylistBtn_clicked()
 {
     if(!playlist_window)
     {
@@ -243,7 +264,7 @@ void MainWindow::on_addPlaylistBtn_clicked()
 }
 
 // Функция удаления плейлиста по кнопке
-void MainWindow::on_deleteBtn_clicked()
+void MainWindow::deleteBtn_clicked()
 {
     qDebug() << selectedPlaylist;
     DataBaseHandler::instance().deletePlaylist(selectedPlaylist);
@@ -255,14 +276,14 @@ void MainWindow::on_deleteBtn_clicked()
 }
 
 // Функция выбора имени плейлиста по клику на него
-void MainWindow::on_playlist_list_cellClicked(int row, int column)
+void MainWindow::playlist_list_cellClicked(int row, int column)
 {
     QString value = ui->playlist_list->item(row, column)->text();
     selectedPlaylist = value;
     rowOnDelete = row;
 }
 
-void MainWindow::on_volumeSlider_valueChanged(int value)
+void MainWindow::volumeSlider_valueChanged(int value)
 {
     float volume = value/100.0f;
     QIcon high_vol_icon, mid_vol_icon, low_vol_icon, muted_vol_icon;

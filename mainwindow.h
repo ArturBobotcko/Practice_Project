@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef MainWindow_H
+#define MainWindow_H
 
 #include <QMainWindow>
 #include <QMediaPlayer>
@@ -7,8 +7,9 @@
 #include <QFileDialog>
 #include <QDebug>
 #include <QMediaMetaData>
-#include "ui_mainwindow.h"
 #include "add_playlist.h"
+
+class Ui_MainWindow;
 
 class MainWindow : public QMainWindow
 {
@@ -34,8 +35,13 @@ private slots:
     void setDuration();
     void on_addPlaylistBtn_clicked();
 
+
+    void on_deleteBtn_clicked();
+
+    void on_playlist_list_cellClicked(int row, int column);
+
 private:
-    Ui::MainWindow *ui;
+    Ui_MainWindow *ui;
     QMediaPlayer *m_player;
     QAudioOutput* m_audioOutput;
     int current_track;
@@ -43,6 +49,7 @@ private:
     int current_position;
     bool onPause;
     add_playlist* playlist_window = nullptr;
-
+    QString selectedPlaylist;
+    int rowOnDelete;
 };
 #endif // MAINWINDOW_H

@@ -1,4 +1,5 @@
 #include "StyleHelper.h"
+#include "ui_mainwindow.h"
 
 QString StyleHelper::setButtonStyle()
 {
@@ -15,7 +16,7 @@ QString StyleHelper::setButtonStyle()
 		;
 }
 
-void StyleHelper::setBackgroundStyle(Ui::MainWindow *ui)
+void StyleHelper::setBackgroundStyle(Ui_MainWindow *ui)
 {
     ui->centralwidget->setStyleSheet("background-color: rgb(230, 230, 250); ");
 }
@@ -76,7 +77,7 @@ QString StyleHelper::setSliderStyle()
 		;
 }
 
-void StyleHelper::setAllButtonsStyle(Ui::MainWindow* ui)
+void StyleHelper::setAllButtonsStyle(Ui_MainWindow* ui)
 {
 	ui->playBtn->setStyleSheet(setButtonStyle());
 	ui->nextTrackBtn->setStyleSheet(setButtonStyle());
@@ -85,7 +86,7 @@ void StyleHelper::setAllButtonsStyle(Ui::MainWindow* ui)
 	ui->muteBtn->setStyleSheet(setButtonStyle());
 }
 
-void StyleHelper::setAllSlidersStyle(Ui::MainWindow* ui)
+void StyleHelper::setAllSlidersStyle(Ui_MainWindow* ui)
 {
 	ui->trackSlider->setStyleSheet(setSliderStyle());
 	ui->volumeSlider->setStyleSheet(setSliderStyle());
@@ -103,9 +104,9 @@ QString StyleHelper::setplaylestsLabelStyle()
 		"}"
 		;
 }
-void StyleHelper::setLablesStyle(Ui::MainWindow* ui)
+void StyleHelper::setLablesStyle(Ui_MainWindow* ui)
 {
-	ui->playlestsLabel->setStyleSheet("font-size: 20px; font-weight: bold; ");
-	ui->playlestsLabel->setStyleSheet(setplaylestsLabelStyle());
+    ui->playlistsLabel->setStyleSheet("font-size: 20px; font-weight: bold; ");
+    ui->playlistsLabel->setStyleSheet(setplaylestsLabelStyle());
 }
 

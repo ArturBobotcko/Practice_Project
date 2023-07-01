@@ -20,6 +20,7 @@ public:
     static DataBaseHandler& instance();
     void createDataBase();
     bool addPlaylist(const QString& playlist_name);
+    void deletePlaylist(const QString& playlist_name);
     QSqlQueryModel* getPlaylists();
 };
 

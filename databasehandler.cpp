@@ -76,6 +76,21 @@ bool DataBaseHandler::addPlaylist(const QString& playlist_name)
     db.close();
 }
 
+// Функция удаления записи из таблицы
+void DataBaseHandler::deletePlaylist(const QString &playlist_name)
+{
+    QSqlQuery query;
+    QString deleteQuery = QString("DELETE FROM Playlists WHERE playlist_name = '%1'").arg(playlist_name);
+    if(!query.exec(deleteQuery))
+    {
+        qDebug() << "Unable to delete playlist from 'Playlists' table: " + query.lastError().text();
+    }
+    else
+    {
+        qDebug() << "Playlist " << playlist_name << " deleted!";
+    }
+}
+
 // Функция получения списка всех плейлистов из БД
 QSqlQueryModel* DataBaseHandler::getPlaylists()
 {

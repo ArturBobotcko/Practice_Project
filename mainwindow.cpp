@@ -2,6 +2,7 @@
 #include "StyleHelper.h"
 #include "databasehandler.h"
 #include "ui_add_playlist.h"
+#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -9,7 +10,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     DataBaseHandler& dbhandler = DataBaseHandler::instance();
     dbhandler.createDataBase();
-
     ui->setupUi(this);
     setIntefaceStyle();
     insertPlaylists();
@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_player, &QMediaPlayer::positionChanged, this, &MainWindow::on_trackSlider_valueChanged);
     connect(m_player, &QMediaPlayer::durationChanged, this, &MainWindow::setDuration);
     //connect(ui->playBtn, &QPushButton::clicked, this, &MainWindow::on_playBtn_clicked);
-    connect(ui->addPlaylistBtn, &QPushButton::clicked, this, &MainWindow::on_addPlaylistBtn_clicked);
+    //connect(ui->addPlaylistBtn, &QPushButton::clicked, this, &MainWindow::on_addPlaylistBtn_clicked);
 }
 
 void MainWindow::setIntefaceStyle()
@@ -203,7 +203,24 @@ void MainWindow::on_addPlaylistBtn_clicked()
     playlist_window->show();
 }
 
+void MainWindow::on_deleteBtn_clicked()
+{
+    qDebug() << selectedPlaylist;
+    DataBaseHandler::instance().deletePlaylist(selectedPlaylist);
+    if (selectedPlaylist != "")
+    {
+        ui->playlist_list->removeRow(rowOnDelete);
+    }
+    selectedPlaylist = "";
+// Добавить удаления записи из БД
+}
 
 
-
+void MainWindow::on_playlist_list_cellClicked(int row, int column)
+{
+    QString value = ui->playlist_list->item(row, column)->text();
+    //qDebug() << value;
+    selectedPlaylist = value;
+    rowOnDelete = row;
+}
 

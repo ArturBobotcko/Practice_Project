@@ -18,6 +18,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void setIntefaceStyle();
+    void insertPlaylists();
 
 private slots:
     void on_playBtn_clicked();
@@ -27,16 +28,11 @@ private slots:
     void on_muteBtn_clicked();
     void on_trackSlider_sliderMoved(int position);
     void on_volumeSlider_sliderMoved(int position);
-    void on_positionChanged(quint64 position);
-    void on_durationChanged(quint64 position);
     void onMetaDataAvailable();
     void on_nextTrackBtn_clicked();
-
     void on_trackSlider_valueChanged(int value);
     void setDuration();
-
     void on_addPlaylistBtn_clicked();
-
 
 private:
     Ui::MainWindow *ui;

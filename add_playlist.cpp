@@ -33,7 +33,7 @@ void add_playlist::on_buttonBox_accepted()
         if (mainWindow)
         {
             // Получение указателя на QTableWidget
-            QTableWidget* tableWidget = mainWindow->findChild<QTableWidget*>("tableWidget_list");
+            QTableWidget* tableWidget = mainWindow->findChild<QTableWidget*>("playlist_list");
             if (tableWidget)
             {
                 // Получение количества строк в таблице

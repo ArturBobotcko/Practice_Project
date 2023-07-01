@@ -9,8 +9,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     DataBaseHandler& dbhandler = DataBaseHandler::instance();
     dbhandler.createDataBase();
+
     ui->setupUi(this);
     setIntefaceStyle();
+    insertPlaylists();
     m_player = new QMediaPlayer(this);
     m_audioOutput = new QAudioOutput(this);
     current_track = 0;
@@ -34,6 +36,27 @@ void MainWindow::setIntefaceStyle()
     StyleHelper::setAllSlidersStyle(ui);
     StyleHelper::setBackgroundStyle(ui);
     StyleHelper::setLablesStyle(ui);
+}
+
+// Функция вставки списка плейлистов в виджет таблицы
+void MainWindow::insertPlaylists()
+{
+    QSqlQueryModel* playlists = DataBaseHandler::instance().getPlaylists();
+    ui->playlist_list->setRowCount(playlists->rowCount());
+    ui->playlist_list->setColumnCount(1);
+    ui->playlist_list->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    QStringList headerLabels;
+    headerLabels << "Название плейлиста";
+    ui->playlist_list->setHorizontalHeaderLabels(headerLabels);
+    for (int row = 0; row < playlists->rowCount(); ++row)
+    {
+        QString playlist_name = playlists->record(row).value("playlist_name").toString();
+        qDebug() << playlist_name;
+        QTableWidgetItem* item = new QTableWidgetItem(playlist_name);
+        ui->playlist_list->setItem(row, 0, item);
+
+    }
+    delete playlists;
 }
 
 void MainWindow::onMetaDataAvailable()

@@ -124,11 +124,10 @@
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QTableWidget" name="tableWidget_list">
+          <widget class="QTableWidget" name="playlist_list">
            <property name="columnCount">
-            <number>1</number>
+            <number>0</number>
            </property>
-           <column/>
           </widget>
          </item>
         </layout>
@@ -394,7 +393,7 @@
      <x>0</x>
      <y>0</y>
      <width>1402</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOpen">

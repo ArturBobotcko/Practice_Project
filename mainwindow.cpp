@@ -11,21 +11,40 @@ MainWindow::MainWindow(QWidget *parent)
     dbhandler.createDataBase();
     ui->setupUi(this);
     setIntefaceStyle();
+
     m_player = new QMediaPlayer(this);
     m_audioOutput = new QAudioOutput(this);
+    m_player->setAudioOutput(m_audioOutput);
+
     current_track = 0;
     pause_position = 0;
     current_position = 0;
     onPause = true;
-    ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);  // Включаем выделение строк
-    ui->tableWidget->setSelectionMode(QAbstractItemView::SingleSelection); // Разрешаем выделять только одну строку
+    ui->tableWidget->setColumnCount(4);
+    ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->volumeSlider->setValue(50);
     connect(m_player, &QMediaPlayer::metaDataChanged, this, &MainWindow::onMetaDataAvailable);
     connect(m_player, &QMediaPlayer::positionChanged, this, &MainWindow::on_trackSlider_valueChanged);
     connect(m_player, &QMediaPlayer::durationChanged, this, &MainWindow::setDuration);
     //connect(ui->playBtn, &QPushButton::clicked, this, &MainWindow::on_playBtn_clicked);
     connect(ui->addPlaylistBtn, &QPushButton::clicked, this, &MainWindow::on_addPlaylistBtn_clicked);
+    connect(ui->tableWidget, &QTableWidget::cellDoubleClicked, this, &MainWindow::cellDoubleClicked);
+}
+
+void MainWindow::playTrack()
+{
+    m_player->stop();
+    ui->tableWidget->selectRow(current_track);
+    QTableWidgetItem *item = ui->tableWidget->item(current_track, 0);
+    if (item) {
+        m_player->setSource(QUrl::fromLocalFile(item->text()));
+    } else {
+        return;
+    }
+    m_player->play();
 }
 
 void MainWindow::setIntefaceStyle()
@@ -36,12 +55,18 @@ void MainWindow::setIntefaceStyle()
     StyleHelper::setLablesStyle(ui);
 }
 
+void MainWindow::cellDoubleClicked(int iRow, int iColumn)
+{
+    current_track = iRow;
+    playTrack();
+}
+
 void MainWindow::onMetaDataAvailable()
 {
     QMediaMetaData data = m_player->metaData();
-    ui->track_name->setText(data.stringValue(QMediaMetaData::Title));
-    ui->track_duration->setText(data.stringValue(QMediaMetaData::Duration));
-    ui->track_author->setText(data.stringValue(QMediaMetaData::Author));
+    ui->tableWidget->setItem(current_track, 1, new QTableWidgetItem(data.stringValue(QMediaMetaData::Title)));
+    ui->tableWidget->setItem(current_track, 2, new QTableWidgetItem(data.stringValue(QMediaMetaData::Author)));
+    ui->tableWidget->setItem(current_track, 3, new QTableWidgetItem(data.stringValue(QMediaMetaData::Duration)));
 }
 
 MainWindow::~MainWindow()
@@ -53,28 +78,13 @@ MainWindow::~MainWindow()
 void MainWindow::on_playBtn_clicked()
 {
     if (onPause) {
-        m_player->setAudioOutput(m_audioOutput);
-        QTableWidgetItem *item = ui->tableWidget->item(current_track, 0);
-        // Если item пустой, то программа падает с ошибкой segmentation fault
-        if(item)
-        {
-            m_player->setSource(QUrl::fromLocalFile(item->text()));
-        }
-        else
-            return;
-        //QMediaMetaData data = m_player->metaData();
-        //ui->track_name->setText(m_player->metaData().stringValue(QMediaMetaData::Author));
-        float volume = (ui->volumeSlider->value())/100.0f;
-        m_audioOutput->setVolume(volume);
-        m_player->setPosition(pause_position);
-        ui->tableWidget->selectRow(current_track);
-        m_player->play();
-        onPause = false;
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/new/prefix1/resources/pause.png"), QSize(), QIcon::Normal, QIcon::Off);
         ui->playBtn->setIcon(icon);
         ui->playBtn->setIconSize(QSize(50, 50));
         ui->playBtn->setFlat(false);
+        playTrack();
+        onPause = false;
     }
     else
     {
@@ -83,8 +93,8 @@ void MainWindow::on_playBtn_clicked()
         ui->playBtn->setIcon(icon);
         ui->playBtn->setIconSize(QSize(50, 50));
         ui->playBtn->setFlat(false);
-        pause_position = current_position;
         m_player->stop();
+        pause_position = current_position;
         ui->trackSlider->setValue(pause_position);
         onPause = true;
     }
@@ -94,7 +104,6 @@ void MainWindow::on_addTracks_clicked()
 {
     QFileDialog dialog(this);
     dialog.setFileMode(QFileDialog::AnyFile);
-    ui->tableWidget->setColumnCount(1);
 
     QStringList selected_files = dialog.getOpenFileNames();
     foreach(const QString& file, selected_files) {
@@ -103,7 +112,6 @@ void MainWindow::on_addTracks_clicked()
     }
 }
 
-
 void MainWindow::on_stopTrackBtn_clicked()
 {
     m_player->stop();
@@ -111,19 +119,14 @@ void MainWindow::on_stopTrackBtn_clicked()
 
 void MainWindow::on_prevTrackBtn_clicked()
 {
-    m_player->stop();
-    if (current_track == 0) {
-        current_track = ui->tableWidget->rowCount();
-    }
-    QTableWidgetItem *item = ui->tableWidget->item(--current_track, 0);
-    ui->tableWidget->selectRow(current_track);
-    if(item)
-    {
-        m_player->setSource(QUrl::fromLocalFile(item->text()));
-    }
-    else
-        return;
-    m_player->play();
+    --current_track;
+    playTrack();
+}
+
+void MainWindow::on_nextTrackBtn_clicked()
+{
+    ++current_track;
+    playTrack();
 }
 
 void MainWindow::setDuration()
@@ -147,23 +150,6 @@ void MainWindow::on_volumeSlider_sliderMoved(int position)
     m_audioOutput->setVolume(position/100.0f);
 }
 
-void MainWindow::on_nextTrackBtn_clicked()
-{
-    m_player->stop();
-    if (current_track == ui->tableWidget->rowCount() - 1) {
-        current_track = -1; // i`m sorry 4 being so stupid
-    }
-    QTableWidgetItem *item = ui->tableWidget->item(++current_track, 0);
-    if (item)
-    {
-        m_player->setSource(QUrl::fromLocalFile(item->text()));
-    }
-    else
-        return;
-    ui->tableWidget->selectRow(current_track);
-    m_player->play();
-}
-
 void MainWindow::on_trackSlider_valueChanged(int value)
 {
     ui->trackSlider->setValue(value);
@@ -179,8 +165,3 @@ void MainWindow::on_addPlaylistBtn_clicked()
     }
     playlist_window->show();
 }
-
-
-
-
-

@@ -7,6 +7,7 @@
 #include <QFileDialog>
 #include <QDebug>
 #include <QMediaMetaData>
+//#include "ui_mainwindow.h"
 #include "ui_mainwindow.h"
 #include "add_playlist.h"
 
@@ -27,8 +28,6 @@ private slots:
     void on_muteBtn_clicked();
     void on_trackSlider_sliderMoved(int position);
     void on_volumeSlider_sliderMoved(int position);
-    void on_positionChanged(quint64 position);
-    void on_durationChanged(quint64 position);
     void onMetaDataAvailable();
     void on_nextTrackBtn_clicked();
 
@@ -36,8 +35,8 @@ private slots:
     void setDuration();
 
     void on_addPlaylistBtn_clicked();
-
-
+    void cellDoubleClicked(int iRow, int iColumn);
+    void playTrack();
 private:
     Ui::MainWindow *ui;
     QMediaPlayer *m_player;

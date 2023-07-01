@@ -37,6 +37,8 @@ private slots:
     void on_deleteBtn_clicked();
     void on_playlist_list_cellClicked(int row, int column);
 
+    void on_volumeSlider_valueChanged(int value);
+
 private:
     Ui_MainWindow *ui;
     QMediaPlayer *m_player;

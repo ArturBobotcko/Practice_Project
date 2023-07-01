@@ -273,3 +273,33 @@ void MainWindow::on_playlist_list_cellClicked(int row, int column)
     // Добавить вывод треков в правую таблицу
 }
 
+
+void MainWindow::on_volumeSlider_valueChanged(int value)
+{
+    float volume = value/100.0f;
+    QIcon high_vol_icon, mid_vol_icon, low_vol_icon, muted_vol_icon;
+    high_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/high-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    mid_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/mid-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    low_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/low-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    muted_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/muted-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    ui->muteBtn->setIconSize(QSize(25, 25));
+    ui->muteBtn->setFlat(false);
+    if (value < 100 && value >= 75)
+    {
+        ui->muteBtn->setIcon(high_vol_icon);
+    }
+    else if (value < 75 && value >= 25)
+    {
+        ui->muteBtn->setIcon(mid_vol_icon);
+    }
+    else if (value < 25 && value != 0)
+    {
+        ui->muteBtn->setIcon(low_vol_icon);
+    }
+    else if (value == 0)
+    {
+        ui->muteBtn->setIcon(muted_vol_icon);
+    }
+    m_audioOutput->setVolume(volume);
+}
+

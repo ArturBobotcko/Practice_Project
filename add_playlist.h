@@ -3,7 +3,13 @@
 
 #include "databasehandler.h"
 
+#include <QMainWindow>
 #include <QDialog>
+#include <QTableView>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlTableModel>
+
 
 namespace Ui {
 class add_playlist;
@@ -24,6 +30,7 @@ private slots:
 
 private:
     Ui::add_playlist *ui;
+    QSqlTableModel *model;
 };
 
 #endif // ADD_PLAYLIST_H

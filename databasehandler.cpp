@@ -75,3 +75,20 @@ bool DataBaseHandler::addPlaylist(const QString& playlist_name)
     }
     db.close();
 }
+/*void refreshPlaylists(QSqlDatabase db) {
+    connectToDataBase(db);
+    QSqlQuery query(db);
+    query.exec("SELECT * FROM Playlists");  // Замените my_table на имя вашей таблицы
+
+    tableWidget_list->setRowCount(query.size());
+    tableWidget_list->setColumnCount(query.record().count());
+
+    int i = 0;
+    while (query.next()) {
+        for (int j = 0; j < query.record().count(); ++j) {
+            QTableWidgetItem *item = new QTableWidgetItem(query.value(j).toString());
+            tableWidget_list->setItem(i, j, item);
+        }
+        ++i;
+    }
+}*/

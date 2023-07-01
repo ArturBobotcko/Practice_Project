@@ -191,3 +191,7 @@ void MainWindow::on_addPlaylistBtn_clicked()
     playlist_window->show();
 }
 
+
+
+
+

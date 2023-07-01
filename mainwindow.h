@@ -37,12 +37,15 @@ private slots:
 
     void on_volumeSlider_sliderMoved(int position);
 
+
      //!!!
     void on_positionChanged(quint64 position);
     void on_durationChanged(quint64 position);
     void onMetaDataAvailable();
     void on_nextTrackBtn_clicked();
     void on_addPlaylistBtn_clicked();
+
+
 
 private:
     Ui::MainWindow *ui;

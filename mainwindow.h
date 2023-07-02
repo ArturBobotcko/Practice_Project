@@ -33,22 +33,21 @@ private slots:
     void deleteBtn_clicked();
     void trackSlider_sliderMoved(int position);
     void volumeSlider_sliderMoved(int position);
-    void onMetaDataAvailable();
+    void MetaDataAvailable();
     void trackSlider_valueChanged(int value);
     void setDuration();
     void cellDoubleClicked(int iRow, int iColumn);
     void playTrack();
     void playlist_list_cellClicked(int row, int column);
     void volumeSlider_valueChanged(int value);
-
+    void autoPlay();
+    void changedPlaybackState();
 private:
     Ui_MainWindow *ui;
     QMediaPlayer *m_player;
     QAudioOutput* m_audioOutput;
     int current_track;
     int pause_position;
-    int current_position;
-    bool onPause;
     add_playlist* playlist_window = nullptr;
     QString selectedPlaylist;
     int rowOnDelete;

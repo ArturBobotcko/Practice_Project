@@ -18,8 +18,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     current_track = 0;
     pause_position = 0;
-    current_position = 0;
-    onPause = true;
 
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -27,9 +25,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->volumeSlider->setValue(50);
 
-    connect(m_player, &QMediaPlayer::metaDataChanged, this, &MainWindow::onMetaDataAvailable);
+    connect(m_player, &QMediaPlayer::metaDataChanged, this, &MainWindow::MetaDataAvailable);
     connect(m_player, &QMediaPlayer::positionChanged, this, &MainWindow::trackSlider_valueChanged);
     connect(m_player, &QMediaPlayer::durationChanged, this, &MainWindow::setDuration);
+    connect(m_player, &QMediaPlayer::mediaStatusChanged, this, autoPlay);
+    connect(m_player, &QMediaPlayer::playbackStateChanged, this, changedPlaybackState);
 
     connect(ui->tableWidget, &QTableWidget::cellDoubleClicked, this, &MainWindow::cellDoubleClicked);
     connect(ui->playlist_list, &QTableWidget::cellClicked, this, &MainWindow::playlist_list_cellClicked);
@@ -96,7 +96,7 @@ void MainWindow::insertPlaylists()
     delete playlists;
 }
 
-void MainWindow::onMetaDataAvailable()
+void MainWindow::MetaDataAvailable()
 {
     QMediaMetaData data = m_player->metaData();
     ui->tableWidget->setItem(current_track, 1, new QTableWidgetItem(data.stringValue(QMediaMetaData::Title)));
@@ -114,28 +114,27 @@ MainWindow::~MainWindow()
 
 void MainWindow::playBtn_clicked()
 {
-    if (onPause) {
-        QIcon icon;
-        icon.addFile(QString::fromUtf8(":/new/prefix1/resources/pause.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        ui->playBtn->setIcon(icon);
-        ui->playBtn->setIconSize(QSize(50, 50));
-        ui->playBtn->setFlat(false);
-        m_player->setPosition(pause_position);
-        playTrack();
-        onPause = false;
-    }
-    else
-    {
-        QIcon icon;
-        icon.addFile(QString::fromUtf8(":/new/prefix1/resources/play.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        ui->playBtn->setIcon(icon);
-        ui->playBtn->setIconSize(QSize(50, 50));
-        ui->playBtn->setFlat(false);
-        pause_position = current_position;
+    if (m_player->playbackState() == QMediaPlayer::PlayingState) {
+        pause_position = m_player->position();
         m_player->stop();
-        ui->trackSlider->setValue(pause_position);
-        onPause = true;
+    } else {
+        m_player->setPosition(ui->trackSlider->value());
+        playTrack();
     }
+}
+
+void MainWindow::changedPlaybackState()
+{
+    QIcon icon;
+    if (m_player->playbackState() == QMediaPlayer::PlayingState) {
+        icon.addFile(QString::fromUtf8(":/new/prefix1/resources/pause.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    } else {
+        icon.addFile(QString::fromUtf8(":/new/prefix1/resources/play.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        ui->trackSlider->setValue(pause_position);
+    }
+    ui->playBtn->setIcon(icon);
+    ui->playBtn->setIconSize(QSize(50, 50));
+    ui->playBtn->setFlat(false);
 }
 
 void MainWindow::addTracks_clicked()
@@ -171,6 +170,13 @@ void MainWindow::nextTrackBtn_clicked()
     }
     ++current_track;
     playTrack();
+}
+
+void MainWindow::autoPlay()
+{
+    if (m_player->mediaStatus() == m_player->EndOfMedia) {
+        nextTrackBtn_clicked();
+    }
 }
 
 void MainWindow::setDuration()
@@ -250,7 +256,6 @@ void MainWindow::volumeSlider_sliderMoved(int position)
 void MainWindow::trackSlider_valueChanged(int value)
 {
     ui->trackSlider->setValue(value);
-    current_position = value;
 }
 
 // Функция вызова окна для добавления плейлиста
@@ -268,7 +273,7 @@ void MainWindow::deleteBtn_clicked()
 {
     qDebug() << selectedPlaylist;
     DataBaseHandler::instance().deletePlaylist(selectedPlaylist);
-    if (selectedPlaylist != "")
+    if (!selectedPlaylist.isEmpty())
     {
         ui->playlist_list->removeRow(rowOnDelete);
     }

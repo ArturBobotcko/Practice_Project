@@ -57,6 +57,8 @@ void StyleHelper::setAllButtonsStyle(Ui_MainWindow* ui)
 	ui->prevTrackBtn->setStyleSheet(setButtonStyle());
 	ui->stopTrackBtn->setStyleSheet(setButtonStyle());
 	ui->muteBtn->setStyleSheet(setButtonStyle());
+    ui->mixButton->setStyleSheet(setButtonStyle());
+    ui->repeatButton->setStyleSheet(setButtonStyle());
 }
 
 void StyleHelper::setAllSlidersStyle(Ui_MainWindow* ui)

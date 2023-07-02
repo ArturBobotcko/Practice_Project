@@ -96,6 +96,17 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="repeatButton">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="MainWindowResources.qrc">
+            <normaloff>:/new/prefix1/resources/no-repeat.svg</normaloff>:/new/prefix1/resources/no-repeat.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="prevTrackBtn">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -207,6 +218,17 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="mixButton">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="MainWindowResources.qrc">
+            <normaloff>:/new/prefix1/resources/mix.svg</normaloff>:/new/prefix1/resources/mix.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="muteBtn">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -273,14 +295,65 @@
     </item>
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QPushButton" name="addTracks">
+      <item row="0" column="0" colspan="2">
+       <widget class="QLabel" name="playlistsLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Lucida Handwriting</family>
+          <pointsize>18</pointsize>
+         </font>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">backGround-color:red</string>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::Box</enum>
+        </property>
         <property name="text">
-         <string>PushButton</string>
+         <string>Ваши плейлисты</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
+      <item row="2" column="1">
+       <widget class="QPushButton" name="deleteBtn">
+        <property name="text">
+         <string>Удалить плейлист</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QTableWidget" name="playlist_list">
+        <property name="columnCount">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QPushButton" name="addPlaylistBtn">
+        <property name="text">
+         <string>Создать плейлист</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
        <widget class="QTableWidget" name="tableWidget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
@@ -318,61 +391,10 @@
         </column>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QLabel" name="playlistsLabel">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>300</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Lucida Handwriting</family>
-          <pointsize>18</pointsize>
-         </font>
-        </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">backGround-color:red</string>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::Box</enum>
-        </property>
+      <item row="0" column="2">
+       <widget class="QLabel" name="cover">
         <property name="text">
-         <string>Ваши плейлисты</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QPushButton" name="deleteBtn">
-        <property name="text">
-         <string>Удалить плейлист</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QTableWidget" name="playlist_list">
-        <property name="columnCount">
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QPushButton" name="addPlaylistBtn">
-        <property name="text">
-         <string>Создать плейлист</string>
+         <string>TextLabel</string>
         </property>
        </widget>
       </item>

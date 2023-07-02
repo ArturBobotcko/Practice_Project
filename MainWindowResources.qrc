@@ -10,5 +10,8 @@
         <file>resources/add.svg</file>
         <file>resources/mid-volume.svg</file>
         <file>resources/stop.svg</file>
+        <file>resources/no-repeat.svg</file>
+        <file>resources/repeat.svg</file>
+        <file>resources/mix.svg</file>
     </qresource>
 </RCC>

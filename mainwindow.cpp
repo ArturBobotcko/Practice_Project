@@ -36,18 +36,25 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->playBtn, &QPushButton::clicked, this, &MainWindow::playBtn_clicked);
     connect(ui->addPlaylistBtn, &QPushButton::clicked, this, &MainWindow::addPlaylistBtn_clicked);
-    connect(ui->addTracks, &QPushButton::clicked, this, &MainWindow::addTracks_clicked);
+
     connect(ui->stopTrackBtn, &QPushButton::clicked, this, &MainWindow::stopTrackBtn_clicked);
     connect(ui->prevTrackBtn, &QPushButton::clicked, this, &MainWindow::prevTrackBtn_clicked);
     connect(ui->muteBtn, &QPushButton::clicked, this, &MainWindow::muteBtn_clicked);
     connect(ui->nextTrackBtn, &QPushButton::clicked, this, &MainWindow::nextTrackBtn_clicked);
     connect(ui->addPlaylistBtn, &QPushButton::clicked, this, &MainWindow::addPlaylistBtn_clicked);
     connect(ui->deleteBtn, &QPushButton::clicked, this, &MainWindow::deleteBtn_clicked);
+    connect(ui->actionOpen_file, &QAction::triggered, this, &MainWindow::addTracks_clicked);
+    connect(ui->repeatButton, &QPushButton::clicked, this, &MainWindow::repeatBtn_clicked);
+    connect(ui->mixButton, &QPushButton::clicked, this, &MainWindow::mixBtn_clicked);
 
     connect(ui->trackSlider, &QSlider::sliderMoved, this, &MainWindow::trackSlider_sliderMoved);
     connect(ui->volumeSlider, &QSlider::sliderMoved, this, &MainWindow::volumeSlider_sliderMoved);
     connect(ui->trackSlider, &QSlider::valueChanged, this, &MainWindow::trackSlider_valueChanged);
     connect(ui->volumeSlider, &QSlider::valueChanged, this, &MainWindow::volumeSlider_valueChanged);
+
+    // idk where to put it
+    ui->mixButton->setIconSize(QSize(25, 25));
+    ui->repeatButton->setIconSize(QSize(25, 25));
 }
 
 void MainWindow::playTrack()
@@ -170,6 +177,22 @@ void MainWindow::nextTrackBtn_clicked()
     }
     ++current_track;
     playTrack();
+}
+
+void MainWindow::repeatBtn_clicked()
+{
+    if (m_player->loops() == QMediaPlayer::Once) {
+        ui->repeatButton->setIcon(QIcon(":/new/prefix1/resources/repeat.svg"));
+        m_player->setLoops(QMediaPlayer::Infinite);
+    } else {
+        ui->repeatButton->setIcon(QIcon(":/new/prefix1/resources/no-repeat.svg"));
+        m_player->setLoops(QMediaPlayer::Once);
+    }
+}
+
+void MainWindow::mixBtn_clicked()
+{
+    //this->close();
 }
 
 void MainWindow::autoPlay()

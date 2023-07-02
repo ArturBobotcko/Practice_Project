@@ -31,6 +31,8 @@ private slots:
     void addTracks_clicked();
     void addPlaylistBtn_clicked();
     void deleteBtn_clicked();
+    void repeatBtn_clicked();
+    void mixBtn_clicked();
     void trackSlider_sliderMoved(int position);
     void volumeSlider_sliderMoved(int position);
     void MetaDataAvailable();

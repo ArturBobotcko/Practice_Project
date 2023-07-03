@@ -9,6 +9,7 @@
 #include <QMediaMetaData>
 #include "ui_mainwindow.h"
 #include "add_playlist.h"
+#include "playlistwindow.h"
 
 class Ui_MainWindow;
 
@@ -45,6 +46,7 @@ private slots:
     void volumeSlider_valueChanged(int value);
     void autoPlay();
     void changedPlaybackState();
+    void playlistDoubleClicked();
 private:
     Ui_MainWindow *ui;
     QMediaPlayer *m_player;
@@ -56,5 +58,7 @@ private:
     int rowOnDelete;
     int current_volume;
     bool muted = false;
+    //Playlist* playlist = nullptr;
+    PlaylistWindow* playlist = nullptr;
 };
 #endif // MAINWINDOW_H

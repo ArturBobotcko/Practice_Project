@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "StyleHelper.h"
 #include "databasehandler.h"
-#include "mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -52,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->volumeSlider, &QSlider::sliderMoved, this, &MainWindow::volumeSlider_sliderMoved);
     connect(ui->trackSlider, &QSlider::valueChanged, this, &MainWindow::trackSlider_valueChanged);
     connect(ui->volumeSlider, &QSlider::valueChanged, this, &MainWindow::volumeSlider_valueChanged);
-
+    connect(ui->playlist_list, &QTableWidget::cellDoubleClicked, this, &MainWindow::playlistDoubleClicked);
     // idk where to put it
     ui->mixButton->setIconSize(QSize(25, 25));
     ui->repeatButton->setIconSize(QSize(25, 25));
@@ -178,6 +177,17 @@ void MainWindow::changedPlaybackState()
     ui->playBtn->setIcon(icon);
     ui->playBtn->setIconSize(QSize(50, 50));
     ui->playBtn->setFlat(false);
+}
+
+void MainWindow::playlistDoubleClicked()
+{
+    qDebug() << selectedPlaylist;
+    if(!playlist)
+    {
+        playlist = new PlaylistWindow(this);
+    }
+    playlist->setPlaylistName(selectedPlaylist);
+    playlist->show();
 }
 
 void MainWindow::addTracks_clicked()

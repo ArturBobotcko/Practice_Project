@@ -28,8 +28,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_player, &QMediaPlayer::metaDataChanged, this, &MainWindow::MetaDataAvailable);
     connect(m_player, &QMediaPlayer::positionChanged, this, &MainWindow::trackSlider_valueChanged);
     connect(m_player, &QMediaPlayer::durationChanged, this, &MainWindow::setDuration);
-    connect(m_player, &QMediaPlayer::mediaStatusChanged, this, autoPlay);
-    connect(m_player, &QMediaPlayer::playbackStateChanged, this, changedPlaybackState);
+    connect(m_player, &QMediaPlayer::mediaStatusChanged, this, &MainWindow::autoPlay);
+    connect(m_player, &QMediaPlayer::playbackStateChanged, this, &MainWindow::changedPlaybackState);
 
     connect(ui->tableWidget, &QTableWidget::cellDoubleClicked, this, &MainWindow::cellDoubleClicked);
     connect(ui->playlist_list, &QTableWidget::cellClicked, this, &MainWindow::playlist_list_cellClicked);
@@ -55,6 +55,9 @@ MainWindow::MainWindow(QWidget *parent)
     // idk where to put it
     ui->mixButton->setIconSize(QSize(25, 25));
     ui->repeatButton->setIconSize(QSize(25, 25));
+    //QIcon searchIcon;
+    //searchIcon.addFile(":/new/prefix1/resources/pause.svg");
+    //ui->cover->setPixmap(QPixmap(":/new/prefix1/resources/pause.svg"));
 }
 
 void MainWindow::playTrack()
@@ -109,6 +112,18 @@ void MainWindow::MetaDataAvailable()
     ui->tableWidget->setItem(current_track, 1, new QTableWidgetItem(data.stringValue(QMediaMetaData::Title)));
     ui->tableWidget->setItem(current_track, 2, new QTableWidgetItem(data.stringValue(QMediaMetaData::Author)));
     ui->tableWidget->setItem(current_track, 3, new QTableWidgetItem(data.stringValue(QMediaMetaData::Duration)));
+    QVariant im = data.value(data.CoverArtImage);
+    QImage cover = im.value<QImage>();
+    QPixmap pix = QPixmap::fromImage(cover);
+    ui->cover->setPixmap(pix);
+    qDebug() << im.isNull();
+    qDebug() << cover.isNull();
+    qDebug() << pix.isNull();
+    qDebug() << data.isEmpty();
+    //ui->cover->setPixmap(cover);
+    //QIcon searchIcon;
+    //searchIcon.addFile(":/new/prefix1/resources/pause.svg");
+    //ui->cover->setPixmap(QPixmap(":/new/prefix1/resources/pause.svg"));
 }
 
 MainWindow::~MainWindow()

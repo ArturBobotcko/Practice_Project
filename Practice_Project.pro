@@ -28,7 +28,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 FORMS += \
     add_playlist.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    playlist.ui
 
 RESOURCES += \
     MainWindowResources.qrc

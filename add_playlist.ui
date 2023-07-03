@@ -35,7 +35,7 @@
    <string>Добавить плейлист</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(230, 230, 250); </string>
+   <string notr="true">background-color: #e8e8e8; </string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

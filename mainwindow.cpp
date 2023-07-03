@@ -28,8 +28,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_player, &QMediaPlayer::metaDataChanged, this, &MainWindow::MetaDataAvailable);
     connect(m_player, &QMediaPlayer::positionChanged, this, &MainWindow::trackSlider_valueChanged);
     connect(m_player, &QMediaPlayer::durationChanged, this, &MainWindow::setDuration);
-    connect(m_player, &QMediaPlayer::mediaStatusChanged, this, autoPlay);
-    connect(m_player, &QMediaPlayer::playbackStateChanged, this, changedPlaybackState);
+    connect(m_player, &QMediaPlayer::mediaStatusChanged, this, &MainWindow::autoPlay);
+    connect(m_player, &QMediaPlayer::playbackStateChanged, this, &MainWindow::changedPlaybackState);
 
     connect(ui->tableWidget, &QTableWidget::cellDoubleClicked, this, &MainWindow::cellDoubleClicked);
     connect(ui->playlist_list, &QTableWidget::cellClicked, this, &MainWindow::playlist_list_cellClicked);

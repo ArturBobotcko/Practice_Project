@@ -22,6 +22,8 @@ public:
     bool addPlaylist(const QString& playlist_name);
     void deletePlaylist(const QString& playlist_name);
     QSqlQueryModel* getPlaylists();
+    bool addTrack(const QString& track_name);
+    QSqlQueryModel* getTracks();
 };
 
 #endif // DATABASEHANDLER_H

@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "StyleHelper.h"
 #include "databasehandler.h"
-#include "ui_mainwindow.h"
+#include "mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setIntefaceStyle();
     insertPlaylists();
+    insertTracks();
 
     m_player = new QMediaPlayer(this);
     m_audioOutput = new QAudioOutput(this);
@@ -55,6 +56,9 @@ MainWindow::MainWindow(QWidget *parent)
     // idk where to put it
     ui->mixButton->setIconSize(QSize(25, 25));
     ui->repeatButton->setIconSize(QSize(25, 25));
+    //QIcon searchIcon;
+    //searchIcon.addFile(":/new/prefix1/resources/pause.svg");
+    //ui->cover->setPixmap(QPixmap(":/new/prefix1/resources/pause.svg"));
 }
 
 void MainWindow::playTrack()
@@ -103,12 +107,44 @@ void MainWindow::insertPlaylists()
     delete playlists;
 }
 
+
+void MainWindow::insertTracks()
+{
+    QSqlQueryModel* tracks= DataBaseHandler::instance().getTracks();
+    ui->tableWidget->setRowCount(tracks->rowCount());
+    //ui->tableWidget->setColumnCount(1);
+   // ui->tableWidget->horizontalHeader()->tableWidget(QHeaderView::Stretch);
+    //QStringList headerLabels;
+    //headerLabels << "Название ";
+    //ui->tableWidget->setHorizontalHeaderLabels(headerLabels);
+    for (int row = 0; row < tracks->rowCount(); ++row)
+    {
+        QString tracks_name = tracks->record(row).value("track_name").toString();
+        qDebug() << tracks_name;
+        QTableWidgetItem* item = new QTableWidgetItem(tracks_name);
+        ui->tableWidget->setItem(row, 0, item);
+
+    }
+    //delete tableWidget;
+}
 void MainWindow::MetaDataAvailable()
 {
     QMediaMetaData data = m_player->metaData();
     ui->tableWidget->setItem(current_track, 1, new QTableWidgetItem(data.stringValue(QMediaMetaData::Title)));
     ui->tableWidget->setItem(current_track, 2, new QTableWidgetItem(data.stringValue(QMediaMetaData::Author)));
     ui->tableWidget->setItem(current_track, 3, new QTableWidgetItem(data.stringValue(QMediaMetaData::Duration)));
+    QVariant im = data.value(data.CoverArtImage);
+    QImage cover = im.value<QImage>();
+    QPixmap pix = QPixmap::fromImage(cover);
+    ui->cover->setPixmap(pix);
+    qDebug() << im.isNull();
+    qDebug() << cover.isNull();
+    qDebug() << pix.isNull();
+    qDebug() << data.isEmpty();
+    //ui->cover->setPixmap(cover);
+    //QIcon searchIcon;
+    //searchIcon.addFile(":/new/prefix1/resources/pause.svg");
+    //ui->cover->setPixmap(QPixmap(":/new/prefix1/resources/pause.svg"));
 }
 
 MainWindow::~MainWindow()
@@ -153,7 +189,10 @@ void MainWindow::addTracks_clicked()
     foreach(const QString& file, selected_files) {
         ui->tableWidget->insertRow(ui->tableWidget->rowCount());
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 0, new QTableWidgetItem(file));
+        //
+        DataBaseHandler::instance().addTrack(file);
     }
+
 }
 
 void MainWindow::stopTrackBtn_clicked()

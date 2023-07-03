@@ -21,6 +21,7 @@ public:
     ~MainWindow();
     void setIntefaceStyle();
     void insertPlaylists();
+    void insertTracks();
 
 private slots:
     void playBtn_clicked();

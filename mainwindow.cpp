@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "StyleHelper.h"
 #include "databasehandler.h"
-#include "ui_mainwindow.h"
+#include "mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setIntefaceStyle();
     insertPlaylists();
+    insertTracks();
 
     m_player = new QMediaPlayer(this);
     m_audioOutput = new QAudioOutput(this);
@@ -28,8 +29,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_player, &QMediaPlayer::metaDataChanged, this, &MainWindow::MetaDataAvailable);
     connect(m_player, &QMediaPlayer::positionChanged, this, &MainWindow::trackSlider_valueChanged);
     connect(m_player, &QMediaPlayer::durationChanged, this, &MainWindow::setDuration);
-    connect(m_player, &QMediaPlayer::mediaStatusChanged, this, autoPlay);
-    connect(m_player, &QMediaPlayer::playbackStateChanged, this, changedPlaybackState);
+    connect(m_player, &QMediaPlayer::mediaStatusChanged, this, &MainWindow::autoPlay);
+    connect(m_player, &QMediaPlayer::playbackStateChanged, this, &MainWindow::changedPlaybackState);
 
     connect(ui->tableWidget, &QTableWidget::cellDoubleClicked, this, &MainWindow::cellDoubleClicked);
     connect(ui->playlist_list, &QTableWidget::cellClicked, this, &MainWindow::playlist_list_cellClicked);
@@ -103,6 +104,26 @@ void MainWindow::insertPlaylists()
     delete playlists;
 }
 
+
+void MainWindow::insertTracks()
+{
+    QSqlQueryModel* tracks= DataBaseHandler::instance().getTracks();
+    ui->tableWidget->setRowCount(tracks->rowCount());
+    //ui->tableWidget->setColumnCount(1);
+   // ui->tableWidget->horizontalHeader()->tableWidget(QHeaderView::Stretch);
+    //QStringList headerLabels;
+    //headerLabels << "Название ";
+    //ui->tableWidget->setHorizontalHeaderLabels(headerLabels);
+    for (int row = 0; row < tracks->rowCount(); ++row)
+    {
+        QString tracks_name = tracks->record(row).value("track_name").toString();
+        qDebug() << tracks_name;
+        QTableWidgetItem* item = new QTableWidgetItem(tracks_name);
+        ui->tableWidget->setItem(row, 0, item);
+
+    }
+    //delete tableWidget;
+}
 void MainWindow::MetaDataAvailable()
 {
     QMediaMetaData data = m_player->metaData();
@@ -153,7 +174,10 @@ void MainWindow::addTracks_clicked()
     foreach(const QString& file, selected_files) {
         ui->tableWidget->insertRow(ui->tableWidget->rowCount());
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 0, new QTableWidgetItem(file));
+        //
+        DataBaseHandler::instance().addTrack(file);
     }
+
 }
 
 void MainWindow::stopTrackBtn_clicked()

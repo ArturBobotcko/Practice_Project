@@ -13,13 +13,15 @@ SOURCES += \
     add_playlist.cpp \
     databasehandler.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    playlistwindow.cpp
 
 HEADERS += \
     StyleHelper.h \
     add_playlist.h \
     databasehandler.h \
-    mainwindow.h
+    mainwindow.h \
+    playlistwindow.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -29,7 +31,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 FORMS += \
     add_playlist.ui \
     mainwindow.ui \
-    playlist.ui
+    playlist.ui \
+    playlistwindow.ui
 
 RESOURCES += \
     MainWindowResources.qrc

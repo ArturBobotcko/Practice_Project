@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>Playlist</class>
+ <widget class="QWidget" name="Playlist">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -85,8 +85,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>1047</width>
-        <height>328</height>
+        <width>1043</width>
+        <height>325</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_2">

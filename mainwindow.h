@@ -22,6 +22,7 @@ public:
     void setIntefaceStyle();
     void insertPlaylists();
     void insertTracks();
+    QStringList sendData();
 
 private slots:
     void playBtn_clicked();

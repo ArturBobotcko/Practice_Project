@@ -22,7 +22,7 @@ public:
     bool addPlaylist(const QString& playlist_name);
     void deletePlaylist(const QString& playlist_name);
     QSqlQueryModel* getPlaylists();
-    bool addTrack(const QString& track_name);
+    bool addTrack(const QString& path_value, const QString& track_name, const QString& author_value, const QString& duration_value);
     QSqlQueryModel* getTracks();
 };
 

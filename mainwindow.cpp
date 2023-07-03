@@ -133,18 +133,14 @@ void MainWindow::MetaDataAvailable()
     ui->tableWidget->setItem(current_track, 1, new QTableWidgetItem(data.stringValue(QMediaMetaData::Title)));
     ui->tableWidget->setItem(current_track, 2, new QTableWidgetItem(data.stringValue(QMediaMetaData::Author)));
     ui->tableWidget->setItem(current_track, 3, new QTableWidgetItem(data.stringValue(QMediaMetaData::Duration)));
-    QVariant im = data.value(data.CoverArtImage);
-    QImage cover = im.value<QImage>();
-    QPixmap pix = QPixmap::fromImage(cover);
-    ui->cover->setPixmap(pix);
-    qDebug() << im.isNull();
-    qDebug() << cover.isNull();
-    qDebug() << pix.isNull();
-    qDebug() << data.isEmpty();
-    //ui->cover->setPixmap(cover);
-    //QIcon searchIcon;
-    //searchIcon.addFile(":/new/prefix1/resources/pause.svg");
-    //ui->cover->setPixmap(QPixmap(":/new/prefix1/resources/pause.svg"));
+    DataBaseHandler::instance().addTrack(data.stringValue(QMediaMetaData::Url), data.stringValue(QMediaMetaData::Title), data.stringValue(QMediaMetaData::Author), data.stringValue(QMediaMetaData::Duration));
+}
+
+QStringList MainWindow::sendData()
+{
+    QMediaMetaData data = m_player->metaData();
+    QStringList meta = {data.stringValue(QMediaMetaData::Title), data.stringValue(QMediaMetaData::Author), data.stringValue(QMediaMetaData::Duration)};
+    return meta;
 }
 
 MainWindow::~MainWindow()
@@ -190,7 +186,7 @@ void MainWindow::addTracks_clicked()
         ui->tableWidget->insertRow(ui->tableWidget->rowCount());
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 0, new QTableWidgetItem(file));
         //
-        DataBaseHandler::instance().addTrack(file);
+        //DataBaseHandler::instance().addTrack(file);
     }
 
 }

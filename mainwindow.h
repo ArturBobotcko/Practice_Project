@@ -39,7 +39,6 @@ private slots:
     void mixBtn_clicked();
     void trackSlider_sliderMoved(int position);
     void volumeSlider_sliderMoved(int position);
-    void MetaDataAvailable();
     void trackSlider_valueChanged(int value);
     void setDuration();
     void cellDoubleClicked(int iRow, int iColumn);

@@ -26,7 +26,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->volumeSlider->setValue(50);
 
-    //connect(m_player, &QMediaPlayer::metaDataChanged, this, &MainWindow::MetaDataAvailable);
     connect(m_player, &QMediaPlayer::positionChanged, this, &MainWindow::trackSlider_valueChanged);
     connect(m_player, &QMediaPlayer::durationChanged, this, &MainWindow::setDuration);
     connect(m_player, &QMediaPlayer::mediaStatusChanged, this, &MainWindow::autoPlay);
@@ -133,15 +132,6 @@ void MainWindow::insertTracks()
     }
     //delete tableWidget;
 }
-void MainWindow::MetaDataAvailable()
-{
-    QMediaMetaData data = m_player->metaData();
-    ui->tableWidget->setItem(current_track, 1, new QTableWidgetItem(data.stringValue(QMediaMetaData::Title)));
-    ui->tableWidget->setItem(current_track, 2, new QTableWidgetItem(data.stringValue(QMediaMetaData::ContributingArtist)));
-    ui->tableWidget->setItem(current_track, 3, new QTableWidgetItem(data.stringValue(QMediaMetaData::Duration)));
-
-    //DataBaseHandler::instance().addTrack(m_player->source().path(), data.stringValue(QMediaMetaData::Title), data.stringValue(QMediaMetaData::ContributingArtist), data.stringValue(QMediaMetaData::Duration));
-}
 
 QStringList MainWindow::sendData()
 {
@@ -198,56 +188,34 @@ void MainWindow::playlistDoubleClicked()
 void MainWindow::addTracks_clicked()
 {
     QFileDialog dialog(this);
-        dialog.setFileMode(QFileDialog::ExistingFiles);
-
-        QStringList selected_files = dialog.getOpenFileNames();
-        foreach(const QString& file, selected_files) {
-            ui->tableWidget->insertRow(ui->tableWidget->rowCount());
-            ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 0, new QTableWidgetItem(file));
-
-
-            QThread* thread = new QThread(this);
-
-
-            QMediaPlayer* player = new QMediaPlayer;
-            player->setSource(QUrl::fromLocalFile(file));
-            player->moveToThread(thread);
-
-
-            QObject::connect(thread, &QThread::started, player, &QMediaPlayer::play);
-
-
-            QObject::connect(player, &QMediaPlayer::mediaStatusChanged, this, &MainWindow::retrieveMetadata);
-
-
-            QObject::connect(thread, &QThread::finished, player, &QMediaPlayer::stop);
-
-
-            QObject::connect(thread, &QThread::finished, thread, &QThread::deleteLater);
-
-
-            thread->start();
-        }
+    dialog.setFileMode(QFileDialog::ExistingFiles);
+    QStringList selected_files = dialog.getOpenFileNames();
+    foreach(const QString& file, selected_files) {
+        QThread* thread = new QThread(this);
+        QMediaPlayer* player = new QMediaPlayer;
+        player->setSource(QUrl::fromLocalFile(file));
+        player->moveToThread(thread);
+        QObject::connect(thread, &QThread::started, player, &QMediaPlayer::play);
+        QObject::connect(player, &QMediaPlayer::mediaStatusChanged, this, &MainWindow::retrieveMetadata);
+        QObject::connect(thread, &QThread::finished, player, &QMediaPlayer::stop);
+        QObject::connect(thread, &QThread::finished, thread, &QThread::deleteLater);
+        thread->start();
+    }
 
 }
 
 void MainWindow::retrieveMetadata()
 {
-    //if (status == QMediaPlayer::LoadedMedia) {
-            QMediaPlayer* player = qobject_cast<QMediaPlayer*>(sender());
-            if (player) {
-                QMediaMetaData data = player->metaData();
-                qDebug() << "Title:" << data.value(QMediaMetaData::Title).toString();
-                qDebug() << "Author:" << data.value(QMediaMetaData::ContributingArtist).toString();
-                qDebug() << "Duration:" << data.stringValue(QMediaMetaData::Duration);
-
-                DataBaseHandler::instance().addTrack(m_player->source().path(), data.stringValue(QMediaMetaData::Title), data.stringValue(QMediaMetaData::ContributingArtist), data.stringValue(QMediaMetaData::Duration));
-            } else {
-                qDebug() << "empty :(";
-            }
-    //} else {
-       // qDebug () << "wtf";
-   // }
+    QMediaPlayer* player = qobject_cast<QMediaPlayer*>(sender());
+    if (player) {
+        QMediaMetaData data = player->metaData();
+        ui->tableWidget->insertRow(ui->tableWidget->rowCount());
+        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 0, new QTableWidgetItem(player->source().path()));
+        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 1, new QTableWidgetItem(data.stringValue(QMediaMetaData::Title)));
+        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 2, new QTableWidgetItem(data.stringValue(QMediaMetaData::ContributingArtist)));
+        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 3, new QTableWidgetItem(data.stringValue(QMediaMetaData::Duration)));
+        DataBaseHandler::instance().addTrack(player->source().path(), data.stringValue(QMediaMetaData::Title), data.stringValue(QMediaMetaData::ContributingArtist), data.stringValue(QMediaMetaData::Duration));
+    }
 }
 
 void MainWindow::stopTrackBtn_clicked()

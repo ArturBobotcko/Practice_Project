@@ -2,6 +2,7 @@
 #define PLAYLISTWINDOW_H
 
 #include <QDialog>
+#include <QMediaMetaData>
 
 namespace Ui {
 class PlaylistWindow;

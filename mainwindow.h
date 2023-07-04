@@ -7,6 +7,7 @@
 #include <QFileDialog>
 #include <QDebug>
 #include <QMediaMetaData>
+#include <QThread>
 #include "ui_mainwindow.h"
 #include "add_playlist.h"
 #include "playlistwindow.h"
@@ -48,6 +49,7 @@ private slots:
     void autoPlay();
     void changedPlaybackState();
     void playlistDoubleClicked();
+    void retrieveMetadata();
 private:
     Ui_MainWindow *ui;
     QMediaPlayer *m_player;

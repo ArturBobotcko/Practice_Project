@@ -116,14 +116,22 @@ bool DataBaseHandler::addTrack(const QString& path_value, const QString& track_n
 {
     connectToDataBase(db);
     QSqlQuery query;
-   // QString track_name, author_value, duration_value;
-    //не туда ывводятся названия
-    QString selectQuery = QString("SELECT (path, track_name, author, duration) FROM AllTracks WHERE path='%1' AND track_name='%2' AND author='%3' AND duration='%4'").arg(path_value).arg(track_name).arg(author_value).arg(duration_value);
+    QString path = path_value;
+    path.replace("'","''");
+    qDebug() << path;
+    QString artist = author_value;
+    artist.replace("'","''");
+    QString selectQuery = QString("SELECT * FROM AllTracks WHERE track_name='%2' AND author='%3' AND duration='%4'").arg(track_name).arg(artist).arg(duration_value);
 
-    QString query_text = QString("INSERT OR IGNORE INTO AllTracks(path, track_name, author, duration) VALUES ('%1', '%2', '%3', '%4')").arg(path_value).arg(track_name).arg(author_value).arg(duration_value);
+
+    QString query_text = QString("INSERT OR IGNORE INTO AllTracks(path, track_name, author, duration) VALUES ('%1', '%2', '%3', '%4')").arg(path).arg(track_name).arg(artist).arg(duration_value);
 
 
-    query.exec(selectQuery);
+    if(query.exec(selectQuery))
+    {
+        qDebug() << "This track already added!";
+        return false;
+    }
     if (!db.tables().contains("AllTracks"))
     {
         query.exec("CREATE TABLE AllTracks"
@@ -133,28 +141,21 @@ bool DataBaseHandler::addTrack(const QString& path_value, const QString& track_n
                    "author varchar(50),"
                    "duration integer"
                    ")");
-        if (query.lastError().isValid())
-        {
-            qDebug() << "Unable to create table 'AllTracks': " << query.lastError().text();
-        }
-        else
-        {
-            qDebug() << "Table 'AllTracks' created.";
-        }
     }
     if (query.next())
     {
-        qDebug() << "Track with name " << path_value << " already exists.";
+        qDebug() << "Track with name " << track_name << " already exists.";
         return false;
     }
     else
     {
         if(!query.exec(query_text))
         {
-            qDebug() << "Unable to insert into 'Tracks' table: " + query.lastError().text();
+            qDebug() << "Unable to insert into 'AllTracks"
+                        "' table: " + query.lastError().text();
             return false;
         }
-        qDebug() << "Track " << path_value << " added!";
+        qDebug() << "Track " << track_name << " added!";
         return true;
     }
     db.close();

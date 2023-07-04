@@ -139,9 +139,10 @@ void MainWindow::MetaDataAvailable()
 {
     QMediaMetaData data = m_player->metaData();
     ui->tableWidget->setItem(current_track, 1, new QTableWidgetItem(data.stringValue(QMediaMetaData::Title)));
-    ui->tableWidget->setItem(current_track, 2, new QTableWidgetItem(data.stringValue(QMediaMetaData::Author)));
+    ui->tableWidget->setItem(current_track, 2, new QTableWidgetItem(data.stringValue(QMediaMetaData::ContributingArtist)));
     ui->tableWidget->setItem(current_track, 3, new QTableWidgetItem(data.stringValue(QMediaMetaData::Duration)));
-    DataBaseHandler::instance().addTrack(data.stringValue(QMediaMetaData::Url), data.stringValue(QMediaMetaData::Title), data.stringValue(QMediaMetaData::Author), data.stringValue(QMediaMetaData::Duration));
+
+    DataBaseHandler::instance().addTrack(m_player->source().path(), data.stringValue(QMediaMetaData::Title), data.stringValue(QMediaMetaData::ContributingArtist), data.stringValue(QMediaMetaData::Duration));
 }
 
 QStringList MainWindow::sendData()

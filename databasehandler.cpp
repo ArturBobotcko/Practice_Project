@@ -118,8 +118,10 @@ bool DataBaseHandler::addTrack(const QString& path_value, const QString& track_n
     QSqlQuery query;
    // QString track_name, author_value, duration_value;
     //не туда ывводятся названия
-    QString selectQuery = QString("SELECT (path, track_name, author, duration) FROM AllTracks WHERE VALUES ('%1', '%2', '%3', '%4')").arg(path_value).arg(track_name).arg(author_value).arg(duration_value);
+    QString selectQuery = QString("SELECT (path, track_name, author, duration) FROM AllTracks WHERE path='%1' AND track_name='%2' AND author='%3' AND duration='%4'").arg(path_value).arg(track_name).arg(author_value).arg(duration_value);
+
     QString query_text = QString("INSERT OR IGNORE INTO AllTracks(path, track_name, author, duration) VALUES ('%1', '%2', '%3', '%4')").arg(path_value).arg(track_name).arg(author_value).arg(duration_value);
+
 
     query.exec(selectQuery);
     if (!db.tables().contains("AllTracks"))

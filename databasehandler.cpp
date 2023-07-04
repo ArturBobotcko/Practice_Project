@@ -116,31 +116,40 @@ bool DataBaseHandler::addTrack(const QString& path_value, const QString& track_n
 {
     connectToDataBase(db);
     QSqlQuery query;
-    QString path = path_value;
-    path.replace("'","''");
-    qDebug() << path;
-    QString artist = author_value;
-    artist.replace("'","''");
-    QString selectQuery = QString("SELECT * FROM AllTracks WHERE track_name='%2' AND author='%3' AND duration='%4'").arg(track_name).arg(artist).arg(duration_value);
-
-
-    QString query_text = QString("INSERT OR IGNORE INTO AllTracks(path, track_name, author, duration) VALUES ('%1', '%2', '%3', '%4')").arg(path).arg(track_name).arg(artist).arg(duration_value);
-
-
-    if(query.exec(selectQuery))
-    {
-        qDebug() << "This track already added!";
-        return false;
-    }
+    qDebug() << "TEST: " << db.tables().contains("AllTracks");
     if (!db.tables().contains("AllTracks"))
     {
-        query.exec("CREATE TABLE AllTracks"
+        qDebug() << "There is no table 'AllTracks'. Creating...";
+        if(!query.exec("CREATE TABLE AllTracks"
                    "(id integer primary key,"
                    "path varchar(100),"
                    "track_name varchar(40),"
                    "author varchar(50),"
                    "duration integer"
-                   ")");
+                       ")"))
+        {
+            qDebug() << query.lastError().text();
+        }
+    }
+
+    QString path = path_value;
+    path.replace("'","''");
+    qDebug() << path;
+    QString artist = author_value;
+    artist.replace("'","''");
+    QString selectQuery = QString("SELECT * FROM AllTracks WHERE track_name='%1' AND author='%2' AND duration='%3'").arg(track_name).arg(artist).arg(duration_value);
+    QString query_text = QString("INSERT OR IGNORE INTO AllTracks(path, track_name, author, duration) VALUES ('%1', '%2', '%3', '%4')").arg(path).arg(track_name).arg(artist).arg(duration_value);
+    query.exec(selectQuery);
+    if(query.next())
+    {
+        qDebug() << "This track already added!";
+        return false;
+    }
+    if(!query.exec(query_text))
+    {
+        qDebug() << "Unable to insert into 'AllTracks"
+                    "' table: " + query.lastError().text();
+        return false;
     }
     if (query.next())
     {
@@ -149,12 +158,7 @@ bool DataBaseHandler::addTrack(const QString& path_value, const QString& track_n
     }
     else
     {
-        if(!query.exec(query_text))
-        {
-            qDebug() << "Unable to insert into 'AllTracks"
-                        "' table: " + query.lastError().text();
-            return false;
-        }
+
         qDebug() << "Track " << track_name << " added!";
         return true;
     }

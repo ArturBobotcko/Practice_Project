@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->volumeSlider->setValue(50);
 
-    connect(m_player, &QMediaPlayer::metaDataChanged, this, &MainWindow::MetaDataAvailable);
+    //connect(m_player, &QMediaPlayer::metaDataChanged, this, &MainWindow::MetaDataAvailable);
     connect(m_player, &QMediaPlayer::positionChanged, this, &MainWindow::trackSlider_valueChanged);
     connect(m_player, &QMediaPlayer::durationChanged, this, &MainWindow::setDuration);
     connect(m_player, &QMediaPlayer::mediaStatusChanged, this, &MainWindow::autoPlay);
@@ -140,7 +140,7 @@ void MainWindow::MetaDataAvailable()
     ui->tableWidget->setItem(current_track, 2, new QTableWidgetItem(data.stringValue(QMediaMetaData::ContributingArtist)));
     ui->tableWidget->setItem(current_track, 3, new QTableWidgetItem(data.stringValue(QMediaMetaData::Duration)));
 
-    DataBaseHandler::instance().addTrack(m_player->source().path(), data.stringValue(QMediaMetaData::Title), data.stringValue(QMediaMetaData::ContributingArtist), data.stringValue(QMediaMetaData::Duration));
+    //DataBaseHandler::instance().addTrack(m_player->source().path(), data.stringValue(QMediaMetaData::Title), data.stringValue(QMediaMetaData::ContributingArtist), data.stringValue(QMediaMetaData::Duration));
 }
 
 QStringList MainWindow::sendData()
@@ -238,8 +238,10 @@ void MainWindow::retrieveMetadata()
             if (player) {
                 QMediaMetaData data = player->metaData();
                 qDebug() << "Title:" << data.value(QMediaMetaData::Title).toString();
-                qDebug() << "Author:" << data.value(QMediaMetaData::Author).toString();
+                qDebug() << "Author:" << data.value(QMediaMetaData::ContributingArtist).toString();
                 qDebug() << "Duration:" << data.stringValue(QMediaMetaData::Duration);
+
+                DataBaseHandler::instance().addTrack(m_player->source().path(), data.stringValue(QMediaMetaData::Title), data.stringValue(QMediaMetaData::ContributingArtist), data.stringValue(QMediaMetaData::Duration));
             } else {
                 qDebug() << "empty :(";
             }

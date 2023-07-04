@@ -109,20 +109,29 @@ void MainWindow::insertPlaylists()
 
 void MainWindow::insertTracks()
 {
-    QSqlQueryModel* tracks= DataBaseHandler::instance().getTracks();
-    ui->tableWidget->setRowCount(tracks->rowCount());
+    QSqlQueryModel* track= DataBaseHandler::instance().getTracks();
+    ui->tableWidget->setRowCount(track->rowCount());
     //ui->tableWidget->setColumnCount(1);
    // ui->tableWidget->horizontalHeader()->tableWidget(QHeaderView::Stretch);
     //QStringList headerLabels;
     //headerLabels << "Название ";
     //ui->tableWidget->setHorizontalHeaderLabels(headerLabels);
-    for (int row = 0; row < tracks->rowCount(); ++row)
+    for (int row = 0; row < track->rowCount(); ++row)
     {
-        QString tracks_name = tracks->record(row).value("track_name").toString();
-        qDebug() << tracks_name;
-        QTableWidgetItem* item = new QTableWidgetItem(tracks_name);
+        QString path = track->record(row).value("path").toString();
+        QString track_name = track->record(row).value("track_name").toString();
+        QString author = track->record(row).value("author").toString();
+        QString duration = track->record(row).value("duration").toString();
+        //qDebug() << path;
+        //qDebug() << track_name;
+        QTableWidgetItem* item = new QTableWidgetItem(path);
+        QTableWidgetItem* item2 = new QTableWidgetItem(track_name);
+        QTableWidgetItem* item3 = new QTableWidgetItem(author);
+        QTableWidgetItem* item4 = new QTableWidgetItem(duration);
         ui->tableWidget->setItem(row, 0, item);
-
+        ui->tableWidget->setItem(row, 1, item2);
+        ui->tableWidget->setItem(row, 2, item3);
+        ui->tableWidget->setItem(row, 3, item4);
     }
     //delete tableWidget;
 }

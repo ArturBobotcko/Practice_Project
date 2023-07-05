@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QMediaMetaData>
 #include <QThread>
+#include <QRandomGenerator>
 #include "ui_mainwindow.h"
 #include "add_playlist.h"
 #include "playlistwindow.h"
@@ -68,5 +69,6 @@ private:
     void addTrackToPlaylist(int actionId, const QModelIndexList& selectedRows);
     selectPlaylist* selectPlaylistDialog = nullptr;
     QStringList rowValues;
+    bool mix;
 };
 #endif // MAINWINDOW_H

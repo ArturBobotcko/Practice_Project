@@ -55,6 +55,8 @@ MainWindow::MainWindow(QWidget *parent)
     // idk where to put it
     ui->mixButton->setIconSize(QSize(25, 25));
     ui->repeatButton->setIconSize(QSize(25, 25));
+    QWidget::setWindowTitle("Spotify enjoyers");
+    QWidget::setWindowIcon(QIcon(":/new/prefix1/resources/play.svg"));
 }
 
 void MainWindow::playTrack()
@@ -221,6 +223,8 @@ void MainWindow::retrieveMetadata()
 void MainWindow::stopTrackBtn_clicked()
 {
     m_player->stop();
+    ui->trackSlider->setValue(0);
+    pause_position = 0;
 }
 
 void MainWindow::prevTrackBtn_clicked()
@@ -340,6 +344,9 @@ void MainWindow::volumeSlider_sliderMoved(int position)
 
 void MainWindow::trackSlider_valueChanged(int value)
 {
+    QTime time = QTime::fromMSecsSinceStartOfDay(value);
+    ui->trackTimer->setText(time.toString("mm:ss:zzz"));
+    //qDebug() << time.toString("hh:mm:ss:zzz");
     ui->trackSlider->setValue(value);
 }
 

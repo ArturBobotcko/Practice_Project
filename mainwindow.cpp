@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "StyleHelper.h"
 #include "databasehandler.h"
+#include "selectplaylist.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -51,6 +52,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->trackSlider, &QSlider::valueChanged, this, &MainWindow::trackSlider_valueChanged);
     connect(ui->volumeSlider, &QSlider::valueChanged, this, &MainWindow::volumeSlider_valueChanged);
     connect(ui->playlist_list, &QTableWidget::cellDoubleClicked, this, &MainWindow::playlistDoubleClicked);
+    connect(ui->tableWidget, &QTableWidget::itemClicked, this, &MainWindow::showContextMenu);
 
     ui->mixButton->setIconSize(QSize(25, 25));
     ui->repeatButton->setIconSize(QSize(25, 25));
@@ -192,6 +194,50 @@ void MainWindow::down_buttonClicked()
     }
 }
 
+void MainWindow::showContextMenu()
+{
+    QItemSelectionModel* selectionModel = ui->tableWidget->selectionModel();
+    QModelIndexList selectedRows = selectionModel->selectedRows();
+    if (!selectedRows.isEmpty()) {
+        QMenu menu(this);
+
+        QAction* action1 = new QAction("Добавить в плейлист", this);
+        connect(action1, &QAction::triggered, [this, selectedRows]() {
+            addTrackToPlaylist(1, selectedRows);
+        });
+
+        menu.addAction(action1);
+
+
+        menu.exec(QCursor::pos());
+    }
+}
+
+void MainWindow::addTrackToPlaylist(int actionId, const QModelIndexList& selectedRows)
+{
+    QStringList rowValues;
+    for (const QModelIndex& index : selectedRows) {
+        QStringList columnValues;
+        for (int column = 0; column < ui->tableWidget->columnCount(); ++column) {
+            QTableWidgetItem* item = ui->tableWidget->item(index.row(), column);
+            if (item) {
+                QString value = item->text();
+                columnValues.append(value);
+            }
+        }
+        rowValues.append(columnValues);
+    }
+
+    if (!selectPlaylistDialog)
+    {
+        selectPlaylistDialog = new selectPlaylist(this);
+        selectPlaylistDialog->setRowValues(rowValues);
+    }
+    selectPlaylistDialog->show();
+
+    qDebug() << "Выполнено действие" << actionId << "для строк:" << rowValues;
+}
+
 void MainWindow::changedPlaybackState()
 {
     QIcon icon;
@@ -214,6 +260,7 @@ void MainWindow::playlistDoubleClicked()
         playlist = new PlaylistWindow(this);
     }
     playlist->setPlaylistName(selectedPlaylist);
+    playlist->insertTracks();
     playlist->show();
 }
 

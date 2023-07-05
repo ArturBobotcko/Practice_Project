@@ -125,7 +125,8 @@ bool DataBaseHandler::addTrack(const QString& path_value, const QString& track_n
                    "path varchar(100),"
                    "track_name varchar(40),"
                    "author varchar(50),"
-                   "duration integer"
+                   "duration integer,"
+                   "id_playlist integer"
                        ")"))
         {
             qDebug() << query.lastError().text();

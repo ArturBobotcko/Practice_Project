@@ -14,14 +14,16 @@ SOURCES += \
     databasehandler.cpp \
     main.cpp \
     mainwindow.cpp \
-    playlistwindow.cpp
+    playlistwindow.cpp \
+    selectplaylist.cpp
 
 HEADERS += \
     StyleHelper.h \
     add_playlist.h \
     databasehandler.h \
     mainwindow.h \
-    playlistwindow.h
+    playlistwindow.h \
+    selectplaylist.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -32,7 +34,8 @@ FORMS += \
     add_playlist.ui \
     mainwindow.ui \
     playlist.ui \
-    playlistwindow.ui
+    playlistwindow.ui \
+    selectplaylist.ui
 
 RESOURCES += \
     MainWindowResources.qrc

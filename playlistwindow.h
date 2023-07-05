@@ -17,9 +17,11 @@ public:
     ~PlaylistWindow();
     void setPlaylistName(const QString& playlistName);
     void setIntefaceStyle();
+    void insertTracks();
 
 private:
     Ui::PlaylistWindow *ui;
+
 };
 
 #endif // PLAYLISTWINDOW_H

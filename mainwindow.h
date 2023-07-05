@@ -11,6 +11,7 @@
 #include "ui_mainwindow.h"
 #include "add_playlist.h"
 #include "playlistwindow.h"
+#include "selectplaylist.h"
 
 class Ui_MainWindow;
 
@@ -51,6 +52,7 @@ private slots:
     void retrieveMetadata();
     void up_buttonClicked();
     void down_buttonClicked();
+    void showContextMenu();
 private:
     Ui_MainWindow *ui;
     QMediaPlayer *m_player;
@@ -63,5 +65,8 @@ private:
     bool muted = false;
     //Playlist* playlist = nullptr;
     PlaylistWindow* playlist = nullptr;
+    void addTrackToPlaylist(int actionId, const QModelIndexList& selectedRows);
+    selectPlaylist* selectPlaylistDialog = nullptr;
+    QStringList rowValues;
 };
 #endif // MAINWINDOW_H

@@ -148,6 +148,13 @@ QPushButton:disabled {
    <item row="3" column="0" colspan="4">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
+      <widget class="QLabel" name="trackTimer">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QSlider" name="trackSlider">
        <property name="enabled">
         <bool>true</bool>

@@ -43,15 +43,10 @@ void PlaylistWindow::insertTracks()
 
         QString selectTracksQuery = QString("SELECT * FROM AllTracks WHERE id_playlist = %1").arg(id_playlist);
         query->setQuery(selectTracksQuery);
-        ui->playlistTracks->clearContents();
-        ui->playlistTracks->setRowCount(0);
-
+        qDebug() << query->rowCount();
         // Установка количества строк в таблице playlistTracks
         ui->playlistTracks->setRowCount(query->rowCount());
-
-        // Обработка результатов выборки
-        int row = 0;
-
+        ui->playlistTracks->setColumnCount(4);
         for (int row = 0; row < query->rowCount(); ++row) {
             for (int column = 1; column < 5; ++column) {
                 QModelIndex index = query->index(row, column);
@@ -60,11 +55,9 @@ void PlaylistWindow::insertTracks()
                 if (value.isValid()) {
                     QString cellValue = value.toString();
                     qDebug() << row << ": " << cellValue;
-
                     // Установка значений в каждую колонку
                     QTableWidgetItem *item = new QTableWidgetItem(cellValue);
-                    ui->playlistTracks->setItem(row, column-1, item);
-                    // Я это с чат гпт делал, но чето не робит, мб я не понимаю че
+                    ui->playlistTracks->setItem(row, column - 1, item);
                 } else {
                     qDebug() << "Invalid value at row" << row << "column" << column;
                 }

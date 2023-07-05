@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #e8e8e8;</string>
+  </property>
   <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,1,0" columnstretch="0,0,0,1">
    <item row="1" column="0">
     <widget class="QGraphicsView" name="playlistCover">
@@ -33,6 +36,12 @@
        <width>200</width>
        <height>200</height>
       </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QGraphicsView {
+	border: 1px solid #bfbfbf; 
+	background-color: rgb(255, 255, 255);
+}</string>
      </property>
     </widget>
    </item>
@@ -102,6 +111,33 @@
      </item>
      <item>
       <widget class="QPushButton" name="playlistListenBtn">
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+    background-color: #FFD700; /* Желтый цвет фона кнопки */
+    border: none; /* Убираем границу */
+    border-radius: 15px; /* Закругленные углы с радиусом 20 пикселей */
+    color: #FFFFFF; /* Белый цвет текста */
+    font-size: 16px; /* Размер шрифта 16 пикселей */
+	padding: 5px 20px; /* Внутренние отступы 10 пикселей сверху/низу и 20 пикселей слева/справа */
+}
+
+QPushButton:hover {
+    background-color: #FFD34C; /* Цвет фона при наведении курсора */
+}
+
+QPushButton:pressed {
+    background-color: #FFC400; /* Цвет фона при нажатии кнопки */
+}
+
+QPushButton:disabled {
+    background-color: #C0C0C0; /* Цвет фона для отключенной кнопки */
+    color: #808080; /* Цвет текста для отключенной кнопки */
+}
+</string>
+       </property>
        <property name="text">
         <string>Слушать</string>
        </property>
@@ -200,6 +236,12 @@
          <property name="icon">
           <iconset resource="MainWindowResources.qrc">
            <normaloff>:/new/prefix1/resources/no-repeat.svg</normaloff>:/new/prefix1/resources/no-repeat.svg</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
          </property>
         </widget>
        </item>
@@ -326,6 +368,12 @@
           <iconset resource="MainWindowResources.qrc">
            <normaloff>:/new/prefix1/resources/mix.svg</normaloff>:/new/prefix1/resources/mix.svg</iconset>
          </property>
+         <property name="iconSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
         </widget>
        </item>
        <item>
@@ -394,11 +442,65 @@
     </layout>
    </item>
    <item row="2" column="0" colspan="4">
-    <widget class="QTableWidget" name="playlistTracks"/>
+    <widget class="QTableWidget" name="playlistTracks">
+     <property name="styleSheet">
+      <string notr="true">QTableWidget {
+    background-color:  #e8e8e8; /* Цвет фона */
+    border: none; /* Убрать границу */
+    color: #333333; /* Цвет текста */
+    selection-background-color: #f9fbff; /* Цвет фона выбранной ячейки */
+	selection-color: #333333;
+    gridline-color: #E5E5E5; /* Цвет линий сетки */
+}
+
+QTableWidget::item {
+    padding: 8px; /* Внутренний отступ для содержимого ячейки */
+}
+
+QTableWidget QHeaderView {
+    background-color:  #e8e8e8; /* Цвет фона заголовков столбцов */
+    color: #333333; /* Цвет текста заголовков столбцов */
+    border: none; /* Убрать границу */
+    font-weight: bold; /* Жирный шрифт для заголовков столбцов */
+    text-align: center; /* Выравнивание текста по центру */
+}
+
+QTableWidget QHeaderView::section {
+    background-color:  #e8e8e8;
+	border-radius: 0;
+}
+
+QTableWidget::item:hover {
+    background-color: #f9fbff; /* Цвет фона ячейки при наведении курсора */
+}
+
+QTableCornerButton::section {
+    background-color:  #e8e8e8; /* Цвет фона квадратика */
+}
+</string>
+     </property>
+    </widget>
    </item>
    <item row="0" column="0" colspan="4">
     <widget class="QLineEdit" name="playlistSearchLine">
+     <property name="styleSheet">
+      <string notr="true">QLineEdit {
+	background-color: rgb(255, 255, 255);
+    border: 1px solid #bfbfbf; /* Граница */
+    border-radius: 10px; /* Закругленные углы */
+    color: #333333; /* Цвет текста */
+    font-size: 16px; /* Размер шрифта */
+    padding: 8px; /* Внутренние отступы */
+}
+
+QLineEdit:focus {
+    border: 2px solid #1ED760; /* Граница при фокусе */
+}</string>
+     </property>
      <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
       <string>Поиск</string>
      </property>
     </widget>

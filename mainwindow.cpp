@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "StyleHelper.h"
 #include "databasehandler.h"
-//#include "threadplayer.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -54,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->trackSlider, &QSlider::valueChanged, this, &MainWindow::trackSlider_valueChanged);
     connect(ui->volumeSlider, &QSlider::valueChanged, this, &MainWindow::volumeSlider_valueChanged);
     connect(ui->playlist_list, &QTableWidget::cellDoubleClicked, this, &MainWindow::playlistDoubleClicked);
-    // idk where to put it
+
     ui->mixButton->setIconSize(QSize(25, 25));
     ui->repeatButton->setIconSize(QSize(25, 25));
     QWidget::setWindowTitle("Spotify enjoyers");
@@ -388,7 +387,6 @@ void MainWindow::trackSlider_valueChanged(int value)
 {
     QTime time = QTime::fromMSecsSinceStartOfDay(value);
     ui->trackTimer->setText(time.toString("mm:ss:zzz"));
-    //qDebug() << time.toString("hh:mm:ss:zzz");
     ui->trackSlider->setValue(value);
 }
 

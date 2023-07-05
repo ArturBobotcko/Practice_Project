@@ -53,7 +53,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->trackSlider, &QSlider::valueChanged, this, &MainWindow::trackSlider_valueChanged);
     connect(ui->volumeSlider, &QSlider::valueChanged, this, &MainWindow::volumeSlider_valueChanged);
     connect(ui->playlist_list, &QTableWidget::cellDoubleClicked, this, &MainWindow::playlistDoubleClicked);
-    connect(ui->tableWidget, &QTableWidget::itemClicked, this, &MainWindow::showContextMenu);
+    ui->tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->tableWidget, &QWidget::customContextMenuRequested, this, &MainWindow::showContextMenu);
     ui->tableWidget->selectRow(0);
 
     ui->mixButton->setIconSize(QSize(25, 25));

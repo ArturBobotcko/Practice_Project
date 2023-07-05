@@ -70,5 +70,6 @@ private:
     selectPlaylist* selectPlaylistDialog = nullptr;
     QStringList rowValues;
     bool mix;
+    void deleteTrack(int actionId, const QModelIndexList& selectedRows);
 };
 #endif // MAINWINDOW_H

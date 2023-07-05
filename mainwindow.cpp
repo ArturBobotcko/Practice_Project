@@ -214,7 +214,13 @@ void MainWindow::showContextMenu()
             addTrackToPlaylist(1, selectedRows);
         });
 
+        QAction* action2 = new QAction("Удалить трек", this);
+        connect(action2, &QAction::triggered, [this, selectedRows]() {
+            deleteTrack(2, selectedRows);
+        });
+
         menu.addAction(action1);
+        menu.addAction(action2);
 
 
         menu.exec(QCursor::pos());
@@ -245,6 +251,40 @@ void MainWindow::addTrackToPlaylist(int actionId, const QModelIndexList& selecte
     selectPlaylistDialog->show();
 
     qDebug() << "Выполнено действие" << actionId << "для строк:" << rowValues;
+}
+
+void MainWindow::deleteTrack(int actionId, const QModelIndexList &selectedRows)
+{
+    QString deleteQuery = "DELETE FROM AllTracks WHERE path = :path AND track_name = :track_name AND author = :author AND duration = :duration";
+
+    // Подготовка запроса на удаление
+    QSqlQuery query;
+    if (!query.prepare(deleteQuery)) {
+        qDebug() << "Unable to prepare delete query: " + query.lastError().text();
+        return;
+    }
+
+    // Выполнение запроса для каждой выбранной строки
+    foreach (const QModelIndex& index, selectedRows) {
+        // Получение данных из выбранной строки
+        QString path = index.sibling(index.row(), 0).data().toString();
+        QString trackName = index.sibling(index.row(), 1).data().toString();
+        QString author = index.sibling(index.row(), 2).data().toString();
+        QString duration = index.sibling(index.row(), 3).data().toString();
+
+        // Установка значений параметров запроса
+        query.bindValue(":path", path);
+        query.bindValue(":track_name", trackName);
+        query.bindValue(":author", author);
+        query.bindValue(":duration", duration);
+
+        // Выполнение запроса на удаление
+        if (!query.exec()) {
+            qDebug() << "Unable to delete from 'AllTracks' table: " + query.lastError().text();
+            return;
+        }
+    }
+    insertTracks();
 }
 
 void MainWindow::changedPlaybackState()

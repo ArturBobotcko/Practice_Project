@@ -241,6 +241,7 @@ void MainWindow::addTrackToPlaylist(int actionId, const QModelIndexList& selecte
         selectPlaylistDialog = new selectPlaylist(this);
         selectPlaylistDialog->setRowValues(rowValues);
     }
+    selectPlaylistDialog->fullComboBox();
     selectPlaylistDialog->show();
 
     qDebug() << "Выполнено действие" << actionId << "для строк:" << rowValues;

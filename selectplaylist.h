@@ -14,7 +14,7 @@ class selectPlaylist : public QDialog
 public:
     explicit selectPlaylist(QWidget *parent = nullptr);
     ~selectPlaylist();
-
+    void fullComboBox();
     void setRowValues(const QStringList &newRowValues);
 
 private slots:
@@ -22,7 +22,7 @@ private slots:
 
 private:
     Ui::selectPlaylist *ui;
-    void fullComboBox();
+
     QStringList rowValues;
 };
 

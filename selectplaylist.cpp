@@ -7,7 +7,6 @@ selectPlaylist::selectPlaylist(QWidget *parent) :
     ui(new Ui::selectPlaylist)
 {
     ui->setupUi(this);
-    fullComboBox();
 }
 
 selectPlaylist::~selectPlaylist()
@@ -30,6 +29,7 @@ void selectPlaylist::fullComboBox()
         QString value = query.value(0).toString();  // Пример получения значения из первого столбца
         result.append(value);
     }
+    ui->comboBox->clear();
     ui->comboBox->addItems(result);
 }
 

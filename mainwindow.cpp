@@ -15,8 +15,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_player = new QMediaPlayer(this);
     m_audioOutput = new QAudioOutput(this);
     m_player->setAudioOutput(m_audioOutput);
-
-    current_track = 0;
     pause_position = 0;
 
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -63,8 +61,8 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::playTrack()
 {
     m_player->stop();
-    ui->tableWidget->selectRow(current_track);
-    QTableWidgetItem *item = ui->tableWidget->item(current_track, 0);
+    ui->tableWidget->selectRow(ui->tableWidget->currentRow());
+    QTableWidgetItem *item = ui->tableWidget->item(ui->tableWidget->currentRow(), 0);
     if (!item) {
         return;
     }
@@ -82,7 +80,6 @@ void MainWindow::setIntefaceStyle()
 
 void MainWindow::cellDoubleClicked(int iRow, int iColumn)
 {
-    current_track = iRow;
     playTrack();
 }
 // Функция вставки списка плейлистов в виджет таблицы
@@ -111,19 +108,12 @@ void MainWindow::insertTracks()
 {
     QSqlQueryModel* track= DataBaseHandler::instance().getTracks();
     ui->tableWidget->setRowCount(track->rowCount());
-    //ui->tableWidget->setColumnCount(1);
-   // ui->tableWidget->horizontalHeader()->tableWidget(QHeaderView::Stretch);
-    //QStringList headerLabels;
-    //headerLabels << "Название ";
-    //ui->tableWidget->setHorizontalHeaderLabels(headerLabels);
     for (int row = 0; row < track->rowCount(); ++row)
     {
         QString path = track->record(row).value("path").toString();
         QString track_name = track->record(row).value("track_name").toString();
         QString author = track->record(row).value("author").toString();
         QString duration = track->record(row).value("duration").toString();
-        //qDebug() << path;
-        //qDebug() << track_name;
         QTableWidgetItem* item = new QTableWidgetItem(path);
         QTableWidgetItem* item2 = new QTableWidgetItem(track_name);
         QTableWidgetItem* item3 = new QTableWidgetItem(author);
@@ -133,7 +123,6 @@ void MainWindow::insertTracks()
         ui->tableWidget->setItem(row, 2, item3);
         ui->tableWidget->setItem(row, 3, item4);
     }
-    //delete tableWidget;
 }
 
 QStringList MainWindow::sendData()
@@ -270,19 +259,21 @@ void MainWindow::stopTrackBtn_clicked()
 
 void MainWindow::prevTrackBtn_clicked()
 {
-    if (current_track == 0) {
-        current_track = ui->tableWidget->rowCount();
+    if (ui->tableWidget->currentRow() == 0) {
+        ui->tableWidget->setCurrentCell(ui->tableWidget->rowCount() - 1, 0);
+    } else {
+        ui->tableWidget->setCurrentCell(ui->tableWidget->currentRow() - 1, 0);
     }
-    --current_track;
     playTrack();
 }
 
 void MainWindow::nextTrackBtn_clicked()
 {
-    if (current_track == ui->tableWidget->rowCount() - 1) {
-        current_track = -1; // i`m stupud but i`m free
+    if (ui->tableWidget->currentRow() == ui->tableWidget->rowCount() - 1) {
+        ui->tableWidget->setCurrentCell(0, 0);
+    } else {
+        ui->tableWidget->setCurrentCell(ui->tableWidget->currentRow() + 1, 0);
     }
-    ++current_track;
     playTrack();
 }
 

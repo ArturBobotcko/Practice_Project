@@ -55,7 +55,6 @@ private:
     Ui_MainWindow *ui;
     QMediaPlayer *m_player;
     QAudioOutput* m_audioOutput;
-    int current_track;
     int pause_position;
     add_playlist* playlist_window = nullptr;
     QString selectedPlaylist;

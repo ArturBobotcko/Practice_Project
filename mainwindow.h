@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QMediaMetaData>
 #include <QThread>
+#include <QRandomGenerator>
 #include "ui_mainwindow.h"
 #include "add_playlist.h"
 #include "playlistwindow.h"
@@ -63,5 +64,6 @@ private:
     bool muted = false;
     //Playlist* playlist = nullptr;
     PlaylistWindow* playlist = nullptr;
+    bool mix;
 };
 #endif // MAINWINDOW_H

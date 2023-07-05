@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_player = new QMediaPlayer(this);
     m_audioOutput = new QAudioOutput(this);
     m_player->setAudioOutput(m_audioOutput);
+    mix = false;
     pause_position = 0;
 
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -51,6 +52,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->trackSlider, &QSlider::valueChanged, this, &MainWindow::trackSlider_valueChanged);
     connect(ui->volumeSlider, &QSlider::valueChanged, this, &MainWindow::volumeSlider_valueChanged);
     connect(ui->playlist_list, &QTableWidget::cellDoubleClicked, this, &MainWindow::playlistDoubleClicked);
+    ui->tableWidget->selectRow(0);
 
     ui->mixButton->setIconSize(QSize(25, 25));
     ui->repeatButton->setIconSize(QSize(25, 25));
@@ -61,7 +63,12 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::playTrack()
 {
     m_player->stop();
-    ui->tableWidget->selectRow(ui->tableWidget->currentRow());
+    if (mix) {
+        int row = QRandomGenerator::global()->bounded(0, ui->tableWidget->rowCount());
+        ui->tableWidget->selectRow(row);
+    } else {
+        ui->tableWidget->selectRow(ui->tableWidget->currentRow());
+    }
     QTableWidgetItem *item = ui->tableWidget->item(ui->tableWidget->currentRow(), 0);
     if (!item) {
         return;
@@ -290,7 +297,11 @@ void MainWindow::repeatBtn_clicked()
 
 void MainWindow::mixBtn_clicked()
 {
-    //this->close();
+    if (mix) {
+        mix = false;
+    } else {
+        mix = true;
+    }
 }
 
 void MainWindow::autoPlay()

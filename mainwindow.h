@@ -49,7 +49,8 @@ private slots:
     void changedPlaybackState();
     void playlistDoubleClicked();
     void retrieveMetadata();
-
+    void up_buttonClicked();
+    void down_buttonClicked();
 private:
     Ui_MainWindow *ui;
     QMediaPlayer *m_player;

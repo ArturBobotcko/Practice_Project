@@ -46,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionOpen_file, &QAction::triggered, this, &MainWindow::addTracks_clicked);
     connect(ui->repeatButton, &QPushButton::clicked, this, &MainWindow::repeatBtn_clicked);
     connect(ui->mixButton, &QPushButton::clicked, this, &MainWindow::mixBtn_clicked);
+    connect(ui->up_button, &QPushButton::clicked, this, &MainWindow::up_buttonClicked);
+    connect(ui->down_button, &QPushButton::clicked, this, &MainWindow::down_buttonClicked);
 
     connect(ui->trackSlider, &QSlider::sliderMoved, this, &MainWindow::trackSlider_sliderMoved);
     connect(ui->volumeSlider, &QSlider::sliderMoved, this, &MainWindow::volumeSlider_sliderMoved);
@@ -159,6 +161,46 @@ void MainWindow::playBtn_clicked()
     } else {
         m_player->setPosition(ui->trackSlider->value());
         playTrack();
+    }
+}
+
+void MainWindow::up_buttonClicked()
+{
+    int currentRow = ui->tableWidget->currentRow();
+    if (currentRow > 0 && currentRow < ui->tableWidget->rowCount()) {
+        QList<QTableWidgetItem*> selectedRow;
+        for (int column = 0; column < ui->tableWidget->columnCount(); column++) {
+            selectedRow.append(ui->tableWidget->item(currentRow, column)->clone());
+        }
+        QList<QTableWidgetItem*> aboveRow;
+        for (int column = 0; column < ui->tableWidget->columnCount(); column++) {
+            aboveRow.append(ui->tableWidget->item(currentRow - 1, column)->clone());
+        }
+        for (int column = 0; column < ui->tableWidget->columnCount(); column++) {
+            ui->tableWidget->setItem(currentRow - 1, column, selectedRow.at(column));
+            ui->tableWidget->setItem(currentRow, column, aboveRow.at(column));
+        }
+        ui->tableWidget->setCurrentCell(currentRow - 1, ui->tableWidget->currentColumn());
+    }
+}
+
+void MainWindow::down_buttonClicked()
+{
+    int currentRow = ui->tableWidget->currentRow();
+    if (currentRow >= 0 && currentRow < ui->tableWidget->rowCount() - 1) {
+        QList<QTableWidgetItem*> selectedRow;
+        for (int column = 0; column < ui->tableWidget->columnCount(); column++) {
+            selectedRow.append(ui->tableWidget->item(currentRow, column)->clone());
+        }
+        QList<QTableWidgetItem*> aboveRow;
+        for (int column = 0; column < ui->tableWidget->columnCount(); column++) {
+            aboveRow.append(ui->tableWidget->item(currentRow + 1, column)->clone());
+        }
+        for (int column = 0; column < ui->tableWidget->columnCount(); column++) {
+            ui->tableWidget->setItem(currentRow + 1, column, selectedRow.at(column));
+            ui->tableWidget->setItem(currentRow, column, aboveRow.at(column));
+        }
+        ui->tableWidget->setCurrentCell(currentRow + 1, ui->tableWidget->currentColumn());
     }
 }
 

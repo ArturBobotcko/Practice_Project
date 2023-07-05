@@ -16,6 +16,7 @@ public:
     explicit PlaylistWindow(QWidget *parent = nullptr);
     ~PlaylistWindow();
     void setPlaylistName(const QString& playlistName);
+    void setIntefaceStyle();
 
 private:
     Ui::PlaylistWindow *ui;

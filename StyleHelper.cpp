@@ -1,5 +1,6 @@
 #include "StyleHelper.h"
 #include "ui_mainwindow.h"
+#include "ui_playlistwindow.h"
 
 QString StyleHelper::setButtonStyle()
 {
@@ -61,10 +62,27 @@ void StyleHelper::setAllButtonsStyle(Ui_MainWindow* ui)
     ui->repeatButton->setStyleSheet(setButtonStyle());
 }
 
+void StyleHelper::setAllButtonsStyle(Ui_PlaylistWindow *ui)
+{
+    ui->playBtn->setStyleSheet(setButtonStyle());
+    ui->nextTrackBtn->setStyleSheet(setButtonStyle());
+    ui->prevTrackBtn->setStyleSheet(setButtonStyle());
+    ui->stopTrackBtn->setStyleSheet(setButtonStyle());
+    ui->muteBtn->setStyleSheet(setButtonStyle());
+    ui->mixButton->setStyleSheet(setButtonStyle());
+    ui->repeatButton->setStyleSheet(setButtonStyle());
+}
+
 void StyleHelper::setAllSlidersStyle(Ui_MainWindow* ui)
 {
     ui->trackSlider->setStyleSheet(setSliderStyle());
-	ui->volumeSlider->setStyleSheet(setSliderStyle());
+    ui->volumeSlider->setStyleSheet(setSliderStyle());
+}
+
+void StyleHelper::setAllSlidersStyle(Ui_PlaylistWindow *ui)
+{
+    ui->trackSlider->setStyleSheet(setSliderStyle());
+    ui->volumeSlider->setStyleSheet(setSliderStyle());
 }
 QString StyleHelper::setplaylestsLabelStyle()
 {

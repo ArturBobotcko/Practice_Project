@@ -53,8 +53,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->volumeSlider, &QSlider::valueChanged, this, &MainWindow::volumeSlider_valueChanged);
     connect(ui->playlist_list, &QTableWidget::cellDoubleClicked, this, &MainWindow::playlistDoubleClicked);
     // idk where to put it
-    ui->mixButton->setIconSize(QSize(25, 25));
-    ui->repeatButton->setIconSize(QSize(25, 25));
+    //ui->mixButton->setIconSize(QSize(25, 25));
+    //ui->repeatButton->setIconSize(QSize(25, 25));
 }
 
 void MainWindow::playTrack()

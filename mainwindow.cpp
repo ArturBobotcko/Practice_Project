@@ -2,6 +2,7 @@
 #include "StyleHelper.h"
 #include "databasehandler.h"
 #include "selectplaylist.h"
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -255,35 +256,16 @@ void MainWindow::addTrackToPlaylist(int actionId, const QModelIndexList& selecte
 
 void MainWindow::deleteTrack(int actionId, const QModelIndexList &selectedRows)
 {
-    QString deleteQuery = "DELETE FROM AllTracks WHERE path = :path AND track_name = :track_name AND author = :author AND duration = :duration";
-
-    // Подготовка запроса на удаление
-    QSqlQuery query;
-    if (!query.prepare(deleteQuery)) {
-        qDebug() << "Unable to prepare delete query: " + query.lastError().text();
+    if (selectedRows.isEmpty()) {
         return;
     }
-
-    // Выполнение запроса для каждой выбранной строки
-    foreach (const QModelIndex& index, selectedRows) {
-        // Получение данных из выбранной строки
-        QString path = index.sibling(index.row(), 0).data().toString();
-        QString trackName = index.sibling(index.row(), 1).data().toString();
-        QString author = index.sibling(index.row(), 2).data().toString();
-        QString duration = index.sibling(index.row(), 3).data().toString();
-
-        // Установка значений параметров запроса
-        query.bindValue(":path", path);
-        query.bindValue(":track_name", trackName);
-        query.bindValue(":author", author);
-        query.bindValue(":duration", duration);
-
-        // Выполнение запроса на удаление
-        if (!query.exec()) {
-            qDebug() << "Unable to delete from 'AllTracks' table: " + query.lastError().text();
-            return;
-        }
+    // Отображение окна предупреждения
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Подтверждение удаления", "Вы уверены, что хотите удалить выбранный трек?", QMessageBox::Yes | QMessageBox::No);
+    if (reply == QMessageBox::No) {
+        return;
     }
+    DataBaseHandler::instance().deleteTrack(selectedRows);
     insertTracks();
 }
 
@@ -494,6 +476,11 @@ void MainWindow::addPlaylistBtn_clicked()
 // Функция удаления плейлиста по кнопке
 void MainWindow::deleteBtn_clicked()
 {
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Подтверждение удаления", "Вы уверены, что хотите удалить выбранный плейлист?", QMessageBox::Yes | QMessageBox::No);
+    if (reply == QMessageBox::No) {
+        return;
+    }
     qDebug() << selectedPlaylist;
     DataBaseHandler::instance().deletePlaylist(selectedPlaylist);
     if (!selectedPlaylist.isEmpty())

@@ -24,6 +24,7 @@ public:
     QSqlQueryModel* getPlaylists();
     bool addTrack(const QString& path_value, const QString& track_name, const QString& author_value, const QString& duration_value);
     QSqlQueryModel* getTracks();
+    void deleteTrack(const QModelIndexList &selectedRows);
 };
 
 #endif // DATABASEHANDLER_H

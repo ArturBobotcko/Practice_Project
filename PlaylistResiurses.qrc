@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file alias="down">resources/downButton.svg</file>
+        <file alias="up">resources/upButton.svg</file>
+    </qresource>
+</RCC>

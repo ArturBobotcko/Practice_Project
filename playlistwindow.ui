@@ -53,6 +53,14 @@
      </item>
      <item>
       <widget class="QLabel" name="playlistName">
+       <property name="font">
+        <font>
+         <pointsize>18</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
        <property name="text">
         <string>название</string>
        </property>
@@ -78,42 +86,38 @@
    </item>
    <item row="1" column="0" colspan="4">
     <widget class="QTableWidget" name="playlistTracks">
-     <property name="styleSheet">
-      <string notr="true">QTableWidget {
-    background-color:  #e8e8e8; /* Цвет фона */
-    border: none; /* Убрать границу */
-    color: #333333; /* Цвет текста */
-    selection-background-color: #f9fbff; /* Цвет фона выбранной ячейки */
-	selection-color: #333333;
-    gridline-color: #E5E5E5; /* Цвет линий сетки */
-}
-
-QTableWidget::item {
-    padding: 8px; /* Внутренний отступ для содержимого ячейки */
-}
-
-QTableWidget QHeaderView {
-    background-color:  #e8e8e8; /* Цвет фона заголовков столбцов */
-    color: #333333; /* Цвет текста заголовков столбцов */
-    border: none; /* Убрать границу */
-    font-weight: bold; /* Жирный шрифт для заголовков столбцов */
-    text-align: center; /* Выравнивание текста по центру */
-}
-
-QTableWidget QHeaderView::section {
-    background-color:  #e8e8e8;
-	border-radius: 0;
-}
-
-QTableWidget::item:hover {
-    background-color: #f9fbff; /* Цвет фона ячейки при наведении курсора */
-}
-
-QTableCornerButton::section {
-    background-color:  #e8e8e8; /* Цвет фона квадратика */
-}
-</string>
+     <property name="enabled">
+      <bool>true</bool>
      </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="tabletTracking">
+      <bool>false</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <column>
+      <property name="text">
+       <string>Путь</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Название</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Исполнитель</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Длительность</string>
+      </property>
+     </column>
     </widget>
    </item>
    <item row="0" column="0">
@@ -450,14 +454,22 @@ QTableCornerButton::section {
    <item row="2" column="3">
     <widget class="QPushButton" name="down_button">
      <property name="text">
-      <string>PushButton</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="MainWindowResources.qrc">
+       <normaloff>:/new/prefix1/resources/downButton.svg</normaloff>:/new/prefix1/resources/downButton.svg</iconset>
      </property>
     </widget>
    </item>
    <item row="2" column="2">
     <widget class="QPushButton" name="up_button">
      <property name="text">
-      <string>PushButton</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="MainWindowResources.qrc">
+       <normaloff>:/new/prefix1/resources/upButton.svg</normaloff>:/new/prefix1/resources/upButton.svg</iconset>
      </property>
     </widget>
    </item>

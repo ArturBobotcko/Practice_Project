@@ -407,7 +407,7 @@ QTableCornerButton::section {
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton {
-    background-color: #FF4C4C; /* Красный цвет фона кнопки */
+    background-color: #333333; /* Красный цвет фона кнопки */
     border: none; /* Убираем границу */
     border-radius: 15px; /* Закругленные углы с радиусом 15 пикселей */
     color: #FFFFFF; /* Белый цвет текста */
@@ -441,7 +441,7 @@ QPushButton:disabled {
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton {
-    background-color: #FFD700; /* Желтый цвет фона кнопки */
+    background-color: #777777; /* Желтый цвет фона кнопки */
     border: none; /* Убираем границу */
     border-radius: 15px; /* Закругленные углы с радиусом 20 пикселей */
     color: #FFFFFF; /* Белый цвет текста */
@@ -484,6 +484,9 @@ QPushButton:disabled {
         <property name="cursor" stdset="0">
          <cursorShape>ArrowCursor</cursorShape>
         </property>
+        <property name="acceptDrops">
+         <bool>false</bool>
+        </property>
         <property name="styleSheet">
          <string notr="true">QTableWidget {
     background-color:  #e8e8e8; /* Цвет фона */
@@ -492,31 +495,6 @@ QPushButton:disabled {
     selection-background-color: #f9fbff; /* Цвет фона выбранной ячейки */
         selection-color: #333333;
     gridline-color: #E5E5E5; /* Цвет линий сетки */
-}
-
-QTableWidget::item {
-    padding: 8px; /* Внутренний отступ для содержимого ячейки */
-}
-
-QTableWidget QHeaderView {
-    background-color:  #e8e8e8; /* Цвет фона заголовков столбцов */
-    color: #333333; /* Цвет текста заголовков столбцов */
-    border: none; /* Убрать границу */
-    font-weight: bold; /* Жирный шрифт для заголовков столбцов */
-    text-align: center; /* Выравнивание текста по центру */
-}
-
-QTableWidget QHeaderView::section {
-    background-color:  #e8e8e8;
-        border-radius: 0;
-}
-
-QTableWidget::item:hover {
-    background-color: #f9fbff; /* Цвет фона ячейки при наведении курсора */
-}
-
-QTableCornerButton::section {
-    background-color:  #e8e8e8; /* Цвет фона квадратика */
 }
 </string>
         </property>
@@ -549,15 +527,41 @@ QTableCornerButton::section {
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QPushButton" name="up_button">
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="mouseTracking">
+           <bool>false</bool>
+          </property>
           <property name="text">
-           <string>Up</string>
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="MainWindowResources.qrc">
+            <normaloff>:/new/prefix1/resources/upButton.svg</normaloff>
+            <normalon>:/new/prefix1/resources/upButton.svg</normalon>
+            <disabledoff>:/new/prefix1/resources/upButton.svg</disabledoff>
+            <disabledon>:/new/prefix1/resources/upButton.svg</disabledon>
+            <activeoff>:/new/prefix1/resources/upButton.svg</activeoff>
+            <activeon>:/new/prefix1/resources/upButton.svg</activeon>
+            <selectedoff>:/new/prefix1/resources/upButton.svg</selectedoff>:/new/prefix1/resources/upButton.svg</iconset>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="down_button">
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="mouseTracking">
+           <bool>true</bool>
+          </property>
           <property name="text">
-           <string>Down</string>
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="MainWindowResources.qrc">
+            <normaloff>:/new/prefix1/resources/downButton.svg</normaloff>:/new/prefix1/resources/downButton.svg</iconset>
           </property>
          </widget>
         </item>
@@ -573,7 +577,7 @@ QTableCornerButton::section {
      <x>0</x>
      <y>0</y>
      <width>1402</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOpen">

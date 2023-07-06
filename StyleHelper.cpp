@@ -60,6 +60,8 @@ void StyleHelper::setAllButtonsStyle(Ui_MainWindow* ui)
 	ui->muteBtn->setStyleSheet(setButtonStyle());
     ui->mixButton->setStyleSheet(setButtonStyle());
     ui->repeatButton->setStyleSheet(setButtonStyle());
+    ui->up_button->setStyleSheet(setButtonStyle());
+    ui->down_button->setStyleSheet(setButtonStyle());
 }
 
 void StyleHelper::setAllButtonsStyle(Ui_PlaylistWindow *ui)
@@ -71,6 +73,8 @@ void StyleHelper::setAllButtonsStyle(Ui_PlaylistWindow *ui)
     ui->muteBtn->setStyleSheet(setButtonStyle());
     ui->mixButton->setStyleSheet(setButtonStyle());
     ui->repeatButton->setStyleSheet(setButtonStyle());
+    ui->up_button->setStyleSheet(setButtonStyle());
+    ui->down_button->setStyleSheet(setButtonStyle());
 }
 
 void StyleHelper::setAllSlidersStyle(Ui_MainWindow* ui)

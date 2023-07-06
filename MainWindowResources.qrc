@@ -13,5 +13,7 @@
         <file>resources/no-repeat.svg</file>
         <file>resources/repeat.svg</file>
         <file>resources/mix.svg</file>
+        <file>resources/downButton.svg</file>
+        <file>resources/upButton.svg</file>
     </qresource>
 </RCC>

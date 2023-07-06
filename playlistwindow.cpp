@@ -28,22 +28,17 @@ PlaylistWindow::PlaylistWindow(QWidget *parent) :
     connect(m_player, &QMediaPlayer::playbackStateChanged, this, &PlaylistWindow::changedPlaybackState);
 
     connect(ui->playlistTracks, &QTableWidget::cellDoubleClicked, this, &PlaylistWindow::cellDoubleClicked);
-    //connect(ui->playlistTracks, &QTableWidget::cellClicked, this, &PlaylistWindow::playlist_list_cellClicked);
-
     connect(ui->playBtn, &QPushButton::clicked, this, &PlaylistWindow::playBtn_clicked);
-
-
     connect(ui->stopTrackBtn, &QPushButton::clicked, this, &PlaylistWindow::stopTrackBtn_clicked);
     connect(ui->prevTrackBtn, &QPushButton::clicked, this, &PlaylistWindow::prevTrackBtn_clicked);
     connect(ui->muteBtn, &QPushButton::clicked, this, &PlaylistWindow::muteBtn_clicked);
     connect(ui->nextTrackBtn, &QPushButton::clicked, this, &PlaylistWindow::nextTrackBtn_clicked);
 
     //connect(ui->deleteBtn, &QPushButton::clicked, this, &PlaylistWindow::deleteBtn_clicked);
-    //connect(ui->actionOpen_file, &QAction::triggered, this, &PlaylistWindow::addTracks_clicked); //???
     connect(ui->repeatButton, &QPushButton::clicked, this, &PlaylistWindow::repeatBtn_clicked);
     connect(ui->mixButton, &QPushButton::clicked, this, &PlaylistWindow::mixBtn_clicked);
-    //connect(ui->up_button, &QPushButton::clicked, this, &PlaylistWindow::up_buttonClicked);
-    //connect(ui->down_button, &QPushButton::clicked, this, &PlaylistWindow::down_buttonClicked);
+    connect(ui->up_button, &QPushButton::clicked, this, &PlaylistWindow::up_buttonClicked);
+    connect(ui->down_button, &QPushButton::clicked, this, &PlaylistWindow::down_buttonClicked);
 
     connect(ui->trackSlider, &QSlider::sliderMoved, this, &PlaylistWindow::trackSlider_sliderMoved);
     connect(ui->volumeSlider, &QSlider::sliderMoved, this, &PlaylistWindow::volumeSlider_sliderMoved);
@@ -116,11 +111,6 @@ void PlaylistWindow::insertTracks()
     }
 }
 
-
-
-
-
-
 void PlaylistWindow::playTrack()
 {
     m_player->stop();
@@ -163,15 +153,15 @@ void PlaylistWindow::playBtn_clicked()
     }
 }
 
-/*void PlaylistWindow::up_buttonClicked()
+void PlaylistWindow::up_buttonClicked()
 {
     int currentRow = ui->playlistTracks->currentRow();
     if (currentRow > 0 && currentRow < ui->playlistTracks->rowCount()) {
-        QList<QplaylistTracksItem*> selectedRow;
+        QList<QTableWidgetItem*> selectedRow;
         for (int column = 0; column < ui->playlistTracks->columnCount(); column++) {
             selectedRow.append(ui->playlistTracks->item(currentRow, column)->clone());
         }
-        QList<QplaylistTracksItem*> aboveRow;
+        QList<QTableWidgetItem*> aboveRow;
         for (int column = 0; column < ui->playlistTracks->columnCount(); column++) {
             aboveRow.append(ui->playlistTracks->item(currentRow - 1, column)->clone());
         }
@@ -187,11 +177,11 @@ void PlaylistWindow::down_buttonClicked()
 {
     int currentRow = ui->playlistTracks->currentRow();
     if (currentRow >= 0 && currentRow < ui->playlistTracks->rowCount() - 1) {
-        QList<QplaylistTracksItem*> selectedRow;
+        QList<QTableWidgetItem*> selectedRow;
         for (int column = 0; column < ui->playlistTracks->columnCount(); column++) {
             selectedRow.append(ui->playlistTracks->item(currentRow, column)->clone());
         }
-        QList<QplaylistTracksItem*> aboveRow;
+        QList<QTableWidgetItem*> aboveRow;
         for (int column = 0; column < ui->playlistTracks->columnCount(); column++) {
             aboveRow.append(ui->playlistTracks->item(currentRow + 1, column)->clone());
         }
@@ -201,7 +191,7 @@ void PlaylistWindow::down_buttonClicked()
         }
         ui->playlistTracks->setCurrentCell(currentRow + 1, ui->playlistTracks->currentColumn());
     }
-}*/
+}
 
 void PlaylistWindow::showContextMenu()
 {
@@ -251,40 +241,6 @@ void PlaylistWindow::changedPlaybackState()
     ui->playBtn->setIconSize(QSize(50, 50));
     ui->playBtn->setFlat(false);
 }
-
-
-/*void PlaylistWindow::addTracks_clicked()
-{
-    QFileDialog dialog(this);
-    dialog.setFileMode(QFileDialog::ExistingFiles);
-    QStringList selected_files = dialog.getOpenFileNames();
-    foreach(const QString& file, selected_files) {
-        QThread* thread = new QThread(this);
-        QMediaPlayer* player = new QMediaPlayer;
-        player->setSource(QUrl::fromLocalFile(file));
-        player->moveToThread(thread);
-        QObject::connect(thread, &QThread::started, player, &QMediaPlayer::play);
-        QObject::connect(player, &QMediaPlayer::mediaStatusChanged, this, &PlaylistWindow::retrieveMetadata);
-        QObject::connect(thread, &QThread::finished, player, &QMediaPlayer::stop);
-        QObject::connect(thread, &QThread::finished, thread, &QThread::deleteLater);
-        thread->start();
-    }
-
-}
-
-void PlaylistWindow::retrieveMetadata()
-{
-    QMediaPlayer* player = qobject_cast<QMediaPlayer*>(sender());
-    if (player) {
-        QMediaMetaData data = player->metaData();
-        ui->playlistTracks->insertRow(ui->playlistTracks->rowCount());
-        ui->playlistTracks->setItem(ui->playlistTracks->rowCount() - 1, 0, new QplaylistTracksItem(player->source().path()));
-        ui->playlistTracks->setItem(ui->playlistTracks->rowCount() - 1, 1, new QplaylistTracksItem(data.stringValue(QMediaMetaData::Title)));
-        ui->playlistTracks->setItem(ui->playlistTracks->rowCount() - 1, 2, new QplaylistTracksItem(data.stringValue(QMediaMetaData::ContributingArtist)));
-        ui->playlistTracks->setItem(ui->playlistTracks->rowCount() - 1, 3, new QplaylistTracksItem(data.stringValue(QMediaMetaData::Duration)));
-        DataBaseHandler::instance().addTrack(player->source().path(), data.stringValue(QMediaMetaData::Title), data.stringValue(QMediaMetaData::ContributingArtist), data.stringValue(QMediaMetaData::Duration));
-    }
-}*/
 
 void PlaylistWindow::stopTrackBtn_clicked()
 {

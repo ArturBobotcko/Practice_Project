@@ -16,37 +16,9 @@
   <property name="styleSheet">
    <string notr="true">background-color: #e8e8e8;</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,1,0" columnstretch="0,0,0,1">
-   <item row="1" column="0">
-    <widget class="QGraphicsView" name="playlistCover">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>200</width>
-       <height>200</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>200</width>
-       <height>200</height>
-      </size>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QGraphicsView {
-	border: 1px solid #bfbfbf; 
-	background-color: rgb(255, 255, 255);
-}</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1" colspan="2">
-    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0" columnstretch="0,0,0,0">
+   <item row="0" column="1" colspan="2">
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0">
      <property name="leftMargin">
       <number>10</number>
      </property>
@@ -62,13 +34,6 @@
         </size>
        </property>
       </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="playlistLabel">
-       <property name="text">
-        <string>Плейлист</string>
-       </property>
-      </widget>
      </item>
      <item>
       <spacer name="verticalSpacer_2">
@@ -109,41 +74,75 @@
        </property>
       </spacer>
      </item>
-     <item>
-      <widget class="QPushButton" name="playlistListenBtn">
-       <property name="cursor">
-        <cursorShape>PointingHandCursor</cursorShape>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
-    background-color: #FFD700; /* Желтый цвет фона кнопки */
-    border: none; /* Убираем границу */
-    border-radius: 15px; /* Закругленные углы с радиусом 20 пикселей */
-    color: #FFFFFF; /* Белый цвет текста */
-    font-size: 16px; /* Размер шрифта 16 пикселей */
-	padding: 5px 20px; /* Внутренние отступы 10 пикселей сверху/низу и 20 пикселей слева/справа */
+    </layout>
+   </item>
+   <item row="1" column="0" colspan="4">
+    <widget class="QTableWidget" name="playlistTracks">
+     <property name="styleSheet">
+      <string notr="true">QTableWidget {
+    background-color:  #e8e8e8; /* Цвет фона */
+    border: none; /* Убрать границу */
+    color: #333333; /* Цвет текста */
+    selection-background-color: #f9fbff; /* Цвет фона выбранной ячейки */
+	selection-color: #333333;
+    gridline-color: #E5E5E5; /* Цвет линий сетки */
 }
 
-QPushButton:hover {
-    background-color: #FFD34C; /* Цвет фона при наведении курсора */
+QTableWidget::item {
+    padding: 8px; /* Внутренний отступ для содержимого ячейки */
 }
 
-QPushButton:pressed {
-    background-color: #FFC400; /* Цвет фона при нажатии кнопки */
+QTableWidget QHeaderView {
+    background-color:  #e8e8e8; /* Цвет фона заголовков столбцов */
+    color: #333333; /* Цвет текста заголовков столбцов */
+    border: none; /* Убрать границу */
+    font-weight: bold; /* Жирный шрифт для заголовков столбцов */
+    text-align: center; /* Выравнивание текста по центру */
 }
 
-QPushButton:disabled {
-    background-color: #C0C0C0; /* Цвет фона для отключенной кнопки */
-    color: #808080; /* Цвет текста для отключенной кнопки */
+QTableWidget QHeaderView::section {
+    background-color:  #e8e8e8;
+	border-radius: 0;
+}
+
+QTableWidget::item:hover {
+    background-color: #f9fbff; /* Цвет фона ячейки при наведении курсора */
+}
+
+QTableCornerButton::section {
+    background-color:  #e8e8e8; /* Цвет фона квадратика */
 }
 </string>
-       </property>
-       <property name="text">
-        <string>Слушать</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QGraphicsView" name="playlistCover">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>200</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>200</width>
+       <height>200</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QGraphicsView {
+	border: 1px solid #bfbfbf; 
+	background-color: rgb(255, 255, 255);
+}</string>
+     </property>
+    </widget>
    </item>
    <item row="3" column="0" colspan="4">
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -448,67 +447,17 @@ QPushButton:disabled {
      </item>
     </layout>
    </item>
-   <item row="2" column="0" colspan="4">
-    <widget class="QTableWidget" name="playlistTracks">
-     <property name="styleSheet">
-      <string notr="true">QTableWidget {
-    background-color:  #e8e8e8; /* Цвет фона */
-    border: none; /* Убрать границу */
-    color: #333333; /* Цвет текста */
-    selection-background-color: #f9fbff; /* Цвет фона выбранной ячейки */
-	selection-color: #333333;
-    gridline-color: #E5E5E5; /* Цвет линий сетки */
-}
-
-QTableWidget::item {
-    padding: 8px; /* Внутренний отступ для содержимого ячейки */
-}
-
-QTableWidget QHeaderView {
-    background-color:  #e8e8e8; /* Цвет фона заголовков столбцов */
-    color: #333333; /* Цвет текста заголовков столбцов */
-    border: none; /* Убрать границу */
-    font-weight: bold; /* Жирный шрифт для заголовков столбцов */
-    text-align: center; /* Выравнивание текста по центру */
-}
-
-QTableWidget QHeaderView::section {
-    background-color:  #e8e8e8;
-	border-radius: 0;
-}
-
-QTableWidget::item:hover {
-    background-color: #f9fbff; /* Цвет фона ячейки при наведении курсора */
-}
-
-QTableCornerButton::section {
-    background-color:  #e8e8e8; /* Цвет фона квадратика */
-}
-</string>
+   <item row="2" column="3">
+    <widget class="QPushButton" name="down_button">
+     <property name="text">
+      <string>PushButton</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="4">
-    <widget class="QLineEdit" name="playlistSearchLine">
-     <property name="styleSheet">
-      <string notr="true">QLineEdit {
-	background-color: rgb(255, 255, 255);
-    border: 1px solid #bfbfbf; /* Граница */
-    border-radius: 10px; /* Закругленные углы */
-    color: #333333; /* Цвет текста */
-    font-size: 16px; /* Размер шрифта */
-    padding: 8px; /* Внутренние отступы */
-}
-
-QLineEdit:focus {
-    border: 2px solid #1ED760; /* Граница при фокусе */
-}</string>
-     </property>
+   <item row="2" column="2">
+    <widget class="QPushButton" name="up_button">
      <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string>Поиск</string>
+      <string>PushButton</string>
      </property>
     </widget>
    </item>

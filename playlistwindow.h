@@ -34,8 +34,6 @@ private slots:
     void prevTrackBtn_clicked();
     void nextTrackBtn_clicked();
     void muteBtn_clicked();
-    //void addTracks_clicked();
-    //void addPlaylistBtn_clicked();
     //void deleteBtn_clicked();
     void repeatBtn_clicked();
     void mixBtn_clicked();
@@ -45,14 +43,11 @@ private slots:
     void setDuration();
     void cellDoubleClicked(int iRow, int iColumn);
     void playTrack();
-    //void playlist_list_cellClicked(int row, int column);
     void volumeSlider_valueChanged(int value);
     void autoPlay();
     void changedPlaybackState();
-    //void playlistDoubleClicked();
-    //void retrieveMetadata();
-    //void up_buttonClicked();
-    //void down_buttonClicked();
+    void up_buttonClicked();
+    void down_buttonClicked();
     void showContextMenu();
     void deleteTrack(int actionId, const QModelIndexList &selectedRows);
 

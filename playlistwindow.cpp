@@ -9,6 +9,7 @@ PlaylistWindow::PlaylistWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setIntefaceStyle();
+    mainWindow = parent;
 
     m_player = new QMediaPlayer(this);
     m_audioOutput = new QAudioOutput(this);
@@ -51,6 +52,16 @@ PlaylistWindow::PlaylistWindow(QWidget *parent) :
     ui->repeatButton->setIconSize(QSize(25, 25));
     QWidget::setWindowTitle("Spotify enjoyers");
     QWidget::setWindowIcon(QIcon(":/new/prefix1/resources/play.svg"));
+}
+
+void PlaylistWindow::closeEvent(QCloseEvent* event)
+{
+    if (m_player->playbackState() == QMediaPlayer::PlayingState) {
+        pause_position = m_player->position();
+        m_player->stop();
+    }
+    mainWindow->show();
+    //mainWindow->closeEvent(event);
 }
 
 PlaylistWindow::~PlaylistWindow()
@@ -127,14 +138,6 @@ void PlaylistWindow::playTrack()
     m_player->setSource(QUrl::fromLocalFile(item->text()));
     m_player->play();
 }
-
-/*void PlaylistWindow::setIntefaceStyle()
-{
-    StyleHelper::setAllButtonsStyle(ui);
-    StyleHelper::setAllSlidersStyle(ui);
-    StyleHelper::setBackgroundStyle(ui);
-    StyleHelper::setLablesStyle(ui);
-}*/
 
 void PlaylistWindow::cellDoubleClicked(int iRow, int iColumn)
 {

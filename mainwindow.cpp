@@ -292,6 +292,11 @@ void MainWindow::playlistDoubleClicked()
     }
     playlist->setPlaylistName(selectedPlaylist);
     playlist->insertTracks();
+    if (m_player->playbackState() == QMediaPlayer::PlayingState) {
+        pause_position = m_player->position();
+        m_player->stop();
+    }
+    hide();
     playlist->show();
 }
 

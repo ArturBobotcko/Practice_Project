@@ -42,6 +42,7 @@ void selectPlaylist::on_pushButton_clicked()
 {
     QString selectedPlaylist = ui->comboBox->currentText();
     QSqlQuery query;
+    qDebug() <<selectedPlaylist;
 
     QString selectQuery = QString("SELECT id FROM Playlists WHERE playlist_name = '%1'").arg(selectedPlaylist);
     if(!query.exec(selectQuery))
@@ -51,6 +52,7 @@ void selectPlaylist::on_pushButton_clicked()
     }
 
     qDebug() << rowValues.count();
+    qDebug() << "test: " << rowValues.at(1);
 
     if (query.next()) {
         int id_playlist = query.value(0).toInt();

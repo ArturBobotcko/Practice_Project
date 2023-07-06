@@ -134,10 +134,12 @@ bool DataBaseHandler::addTrack(const QString& path_value, const QString& track_n
     }
 
     QString path = path_value;
-    path.replace("'","''");
-    qDebug() << path;
     QString artist = author_value;
+    path.replace("'","''");
     artist.replace("'","''");
+    qDebug() << path;
+
+
     QString selectQuery = QString("SELECT * FROM AllTracks WHERE track_name='%1' AND author='%2' AND duration='%3'").arg(track_name).arg(artist).arg(duration_value);
     QString query_text = QString("INSERT OR IGNORE INTO AllTracks(path, track_name, author, duration) VALUES ('%1', '%2', '%3', '%4')").arg(path).arg(track_name).arg(artist).arg(duration_value);
     query.exec(selectQuery);

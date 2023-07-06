@@ -44,6 +44,7 @@ void selectPlaylist::on_pushButton_clicked()
     QSqlQuery query;
     qDebug() <<selectedPlaylist;
 
+
     QString selectQuery = QString("SELECT id FROM Playlists WHERE playlist_name = '%1'").arg(selectedPlaylist);
     if(!query.exec(selectQuery))
     {
@@ -53,14 +54,17 @@ void selectPlaylist::on_pushButton_clicked()
 
     qDebug() << rowValues.count();
     qDebug() << "test: " << rowValues.at(1);
-
+    QString path = rowValues.at(0);
+    QString artist = rowValues.at(2);
+    path.replace("'","''");
+    artist.replace("'","''");
     if (query.next()) {
         int id_playlist = query.value(0).toInt();
         QString updateQuery = QString("UPDATE AllTracks SET id_playlist = %1 WHERE path = '%2' AND track_name = '%3' AND author = '%4' AND duration = '%5'")
                                   .arg(id_playlist)
-                                  .arg(rowValues.at(0))
+                                  .arg(path)
                                   .arg(rowValues.at(1))
-                                  .arg(rowValues.at(2))
+                                  .arg(artist)
                                   .arg(rowValues.at(3));
         if (!query.exec(updateQuery)) {
             qDebug() << "Unable to update 'AllTracks' table: " + query.lastError().text();

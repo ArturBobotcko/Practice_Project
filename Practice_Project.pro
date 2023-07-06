@@ -14,6 +14,7 @@ SOURCES += \
     databasehandler.cpp \
     main.cpp \
     mainwindow.cpp \
+    musicplayer.cpp \
     playlistwindow.cpp \
     selectplaylist.cpp
 
@@ -22,6 +23,7 @@ HEADERS += \
     add_playlist.h \
     databasehandler.h \
     mainwindow.h \
+    musicplayer.h \
     playlistwindow.h \
     selectplaylist.h
 

@@ -320,48 +320,119 @@
     </item>
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="0" colspan="2">
-       <widget class="QTableWidget" name="playlist_list">
+      <item row="2" column="1">
+       <widget class="QPushButton" name="deleteBtn">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
         <property name="styleSheet">
-         <string notr="true">QTableWidget {
-    background-color:  #e8e8e8; /* Цвет фона */
-    border: none; /* Убрать границу */
-    color: #333333; /* Цвет текста */
-    selection-background-color: #f9fbff; /* Цвет фона выбранной ячейки */
-        selection-color: #333333;
-    gridline-color: #E5E5E5; /* Цвет линий сетки */
+         <string notr="true">QPushButton {
+    background-color: #5b5b5b; /* Красный цвет фона кнопки */
+    border: none; /* Убираем границу */
+    border-radius: 15px; /* Закругленные углы с радиусом 15 пикселей */
+    color: #FFFFFF; /* Белый цвет текста */
+    font-size: 16px; /* Размер шрифта 16 пикселей */
+    padding: 5px 20px; /* Внутренние отступы 5 пикселей сверху/низу и 20 пикселей слева/справа */
 }
 
-QTableWidget::item {
-    padding: 8px; /* Внутренний отступ для содержимого ячейки */
+QPushButton:hover {
+    background-color: #000000; /* Цвет фона при наведении курсора */
+
+}
+QPushButton:pressed {
+    background-color: #5b5b5b; /* Цвет фона при нажатии кнопки */
 }
 
-QTableWidget QHeaderView {
-    background-color:  #e8e8e8; /* Цвет фона заголовков столбцов */
-    color: #333333; /* Цвет текста заголовков столбцов */
-    border: none; /* Убрать границу */
-    font-weight: bold; /* Жирный шрифт для заголовков столбцов */
-    text-align: center; /* Выравнивание текста по центру */
-}
 
-QTableWidget QHeaderView::section {
-    background-color:  #e8e8e8;
-        border-radius: 0;
-}
-
-QTableWidget::item:hover {
-    background-color: #f9fbff; /* Цвет фона ячейки при наведении курсора */
-}
-
-QTableCornerButton::section {
-    background-color:  #e8e8e8; /* Цвет фона квадратика */
+QPushButton:disabled {
+    background-color: #C0C0C0; /* Цвет фона для отключенной кнопки */
+    color: #808080; /* Цвет текста для отключенной кнопки */
 }
 </string>
         </property>
-        <property name="columnCount">
-         <number>0</number>
+        <property name="text">
+         <string>Удалить плейлист</string>
         </property>
        </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QPushButton" name="addPlaylistBtn">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+    background-color: #777777; /* Желтый цвет фона кнопки */
+    border: none; /* Убираем границу */
+    border-radius: 15px; /* Закругленные углы с радиусом 20 пикселей */
+    color: #FFFFFF; /* Белый цвет текста */
+    font-size: 16px; /* Размер шрифта 16 пикселей */
+        padding: 5px 20px; /* Внутренние отступы 10 пикселей сверху/низу и 20 пикселей слева/справа */
+}
+
+QPushButton:hover {
+    background-color: #424242; /* Цвет фона при наведении курсора */
+
+}
+
+QPushButton:pressed {
+    background-color: #777777; /* Цвет фона при нажатии кнопки */
+}
+
+QPushButton:disabled {
+    background-color: #C0C0C0; /* Цвет фона для отключенной кнопки */
+    color: #808080; /* Цвет текста для отключенной кнопки */
+}
+</string>
+        </property>
+        <property name="text">
+         <string>Создать плейлист</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="up_button">
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="mouseTracking">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="MainWindowResources.qrc">
+            <normaloff>:/new/prefix1/resources/upButton.svg</normaloff>
+            <normalon>:/new/prefix1/resources/upButton.svg</normalon>
+            <disabledoff>:/new/prefix1/resources/upButton.svg</disabledoff>
+            <disabledon>:/new/prefix1/resources/upButton.svg</disabledon>
+            <activeoff>:/new/prefix1/resources/upButton.svg</activeoff>
+            <activeon>:/new/prefix1/resources/upButton.svg</activeon>
+            <selectedoff>:/new/prefix1/resources/upButton.svg</selectedoff>:/new/prefix1/resources/upButton.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="down_button">
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="mouseTracking">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="MainWindowResources.qrc">
+            <normaloff>:/new/prefix1/resources/downButton.svg</normaloff>:/new/prefix1/resources/downButton.svg</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item row="0" column="0" colspan="3">
        <widget class="QLabel" name="playlistsLabel">
@@ -397,74 +468,6 @@ QTableCornerButton::section {
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QPushButton" name="deleteBtn">
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">QPushButton {
-    background-color: #333333; /* Красный цвет фона кнопки */
-    border: none; /* Убираем границу */
-    border-radius: 15px; /* Закругленные углы с радиусом 15 пикселей */
-    color: #FFFFFF; /* Белый цвет текста */
-    font-size: 16px; /* Размер шрифта 16 пикселей */
-    padding: 5px 20px; /* Внутренние отступы 5 пикселей сверху/низу и 20 пикселей слева/справа */
-}
-
-QPushButton:hover {
-    background-color: #FF3333; /* Цвет фона при наведении курсора */
-}
-
-QPushButton:pressed {
-    background-color: #FF1A1A; /* Цвет фона при нажатии кнопки */
-}
-
-QPushButton:disabled {
-    background-color: #C0C0C0; /* Цвет фона для отключенной кнопки */
-    color: #808080; /* Цвет текста для отключенной кнопки */
-}
-</string>
-        </property>
-        <property name="text">
-         <string>Удалить плейлист</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QPushButton" name="addPlaylistBtn">
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">QPushButton {
-    background-color: #777777; /* Желтый цвет фона кнопки */
-    border: none; /* Убираем границу */
-    border-radius: 15px; /* Закругленные углы с радиусом 20 пикселей */
-    color: #FFFFFF; /* Белый цвет текста */
-    font-size: 16px; /* Размер шрифта 16 пикселей */
-        padding: 5px 20px; /* Внутренние отступы 10 пикселей сверху/низу и 20 пикселей слева/справа */
-}
-
-QPushButton:hover {
-    background-color: #FFD34C; /* Цвет фона при наведении курсора */
-}
-
-QPushButton:pressed {
-    background-color: #FFC400; /* Цвет фона при нажатии кнопки */
-}
-
-QPushButton:disabled {
-    background-color: #C0C0C0; /* Цвет фона для отключенной кнопки */
-    color: #808080; /* Цвет текста для отключенной кнопки */
-}
-</string>
-        </property>
-        <property name="text">
-         <string>Создать плейлист</string>
         </property>
        </widget>
       </item>
@@ -523,49 +526,48 @@ QPushButton:disabled {
         </column>
        </widget>
       </item>
-      <item row="2" column="2">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QPushButton" name="up_button">
-          <property name="cursor">
-           <cursorShape>PointingHandCursor</cursorShape>
-          </property>
-          <property name="mouseTracking">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="MainWindowResources.qrc">
-            <normaloff>:/new/prefix1/resources/upButton.svg</normaloff>
-            <normalon>:/new/prefix1/resources/upButton.svg</normalon>
-            <disabledoff>:/new/prefix1/resources/upButton.svg</disabledoff>
-            <disabledon>:/new/prefix1/resources/upButton.svg</disabledon>
-            <activeoff>:/new/prefix1/resources/upButton.svg</activeoff>
-            <activeon>:/new/prefix1/resources/upButton.svg</activeon>
-            <selectedoff>:/new/prefix1/resources/upButton.svg</selectedoff>:/new/prefix1/resources/upButton.svg</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="down_button">
-          <property name="cursor">
-           <cursorShape>PointingHandCursor</cursorShape>
-          </property>
-          <property name="mouseTracking">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="MainWindowResources.qrc">
-            <normaloff>:/new/prefix1/resources/downButton.svg</normaloff>:/new/prefix1/resources/downButton.svg</iconset>
-          </property>
-         </widget>
-        </item>
-       </layout>
+      <item row="1" column="0" colspan="2">
+       <widget class="QTableWidget" name="playlist_list">
+        <property name="styleSheet">
+         <string notr="true">QTableWidget {
+    background-color:  #e8e8e8; /* Цвет фона */
+    border: none; /* Убрать границу */
+    color: #333333; /* Цвет текста */
+    selection-background-color: #f9fbff; /* Цвет фона выбранной ячейки */
+        selection-color: #333333;
+    gridline-color: #E5E5E5; /* Цвет линий сетки */
+}
+
+QTableWidget::item {
+    padding: 8px; /* Внутренний отступ для содержимого ячейки */
+}
+
+QTableWidget QHeaderView {
+    background-color:  #e8e8e8; /* Цвет фона заголовков столбцов */
+    color: #333333; /* Цвет текста заголовков столбцов */
+    border: none; /* Убрать границу */
+    font-weight: bold; /* Жирный шрифт для заголовков столбцов */
+    text-align: center; /* Выравнивание текста по центру */
+}
+
+QTableWidget QHeaderView::section {
+    background-color:  #e8e8e8;
+        border-radius: 0;
+}
+
+QTableWidget::item:hover {
+    background-color: #f9fbff; /* Цвет фона ячейки при наведении курсора */
+}
+
+QTableCornerButton::section {
+    background-color:  #e8e8e8; /* Цвет фона квадратика */
+}
+</string>
+        </property>
+        <property name="columnCount">
+         <number>0</number>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>

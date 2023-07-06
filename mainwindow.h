@@ -71,5 +71,6 @@ private:
     QStringList rowValues;
     bool mix;
     void deleteTrack(int actionId, const QModelIndexList& selectedRows);
+    void setupTableWidgetTooltips();
 };
 #endif // MAINWINDOW_H

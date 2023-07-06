@@ -45,7 +45,8 @@ PlaylistWindow::PlaylistWindow(QWidget *parent) :
     connect(ui->volumeSlider, &QSlider::sliderMoved, this, &PlaylistWindow::volumeSlider_sliderMoved);
     connect(ui->trackSlider, &QSlider::valueChanged, this, &PlaylistWindow::trackSlider_valueChanged);
     connect(ui->volumeSlider, &QSlider::valueChanged, this, &PlaylistWindow::volumeSlider_valueChanged);
-
+    ui->playlistTracks->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->playlistTracks, &QWidget::customContextMenuRequested, this, &PlaylistWindow::showContextMenu);
     ui->playlistTracks->selectRow(0);
 
     ui->mixButton->setIconSize(QSize(25, 25));
@@ -218,16 +219,36 @@ void PlaylistWindow::showContextMenu()
 
 void PlaylistWindow::deleteTrack(int actionId, const QModelIndexList &selectedRows)
 {
-    if (selectedRows.isEmpty()) {
-        return;
+    QStringList rowValues;
+    for (const QModelIndex& index : selectedRows) {
+        QStringList columnValues;
+        for (int column = 0; column < ui->playlistTracks->columnCount(); ++column) {
+            QTableWidgetItem* item = ui->playlistTracks->item(index.row(), column);
+            if (item) {
+                QString value = item->text();
+                columnValues.append(value);
+            }
+        }
+        rowValues.append(columnValues);
     }
-    // Отображение окна предупреждения
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Подтверждение удаления", "Вы уверены, что хотите удалить выбранный трек?", QMessageBox::Yes | QMessageBox::No);
-    if (reply == QMessageBox::No) {
-        return;
+   // Сделать update на изменение поля айди плейлиста в нуль и форму заново выбрать короче
+    int currentPlaylistId; // Ваш способ получения текущего id плейлиста
+    qDebug() << selectedRows.at(1);
+    // Выполнение SQL-запроса для обновления полей id_playlist в таблице AllTracks
+    QSqlQuery query;
+    query.prepare("SELECT id FROM Playlists WHERE name = :playlistName");
+    query.bindValue(":playlistName", ui->playlistName->text());
+    if (query.exec() && query.next()) {
+        currentPlaylistId = query.value(0).toInt(); // Получение значения идентификатора плейлиста из первого столбца
     }
-    DataBaseHandler::instance().deleteTrack(selectedRows);
+    query.prepare("UPDATE AllTracks SET id_playlist = NULL WHERE id_playlist = :playlistId AND path = :path AND track_name = :track_name AND author = :author AND duration = :duration");
+    query.bindValue(":playlistId", currentPlaylistId);
+    query.bindValue(":path", rowValues.at(0));
+    query.bindValue(":track_name", rowValues.at(1));
+    query.bindValue(":author", rowValues.at(2));
+    query.bindValue(":duration", rowValues.at(3));
+    query.exec();
+
     insertTracks();
 }
 

@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     setIntefaceStyle();
     insertPlaylists();
     insertTracks();
+    setupTableWidgetTooltips();
 
     m_player = new QMediaPlayer(this);
     m_audioOutput = new QAudioOutput(this);
@@ -270,6 +271,18 @@ void MainWindow::deleteTrack(int actionId, const QModelIndexList &selectedRows)
     insertTracks();
 }
 
+void MainWindow::setupTableWidgetTooltips()
+{
+    for (int row = 0; row < ui->tableWidget->rowCount(); ++row) {
+        for (int column = 0; column < ui->tableWidget->columnCount(); ++column) {
+            QTableWidgetItem* item = ui->tableWidget->item(row, column);
+            if (item) {
+                item->setToolTip(item->text()); // Установка подсказки для элемента
+            }
+        }
+    }
+}
+
 void MainWindow::changedPlaybackState()
 {
     QIcon icon;
@@ -325,12 +338,33 @@ void MainWindow::retrieveMetadata()
     QMediaPlayer* player = qobject_cast<QMediaPlayer*>(sender());
     if (player) {
         QMediaMetaData data = player->metaData();
+
+        QString filePath = player->source().path();
+        QString title = data.stringValue(QMediaMetaData::Title);
+        QString artist = data.stringValue(QMediaMetaData::ContributingArtist);
+        QString duration = data.stringValue(QMediaMetaData::Duration);
+
+        // Проверка наличия песни в таблице
+        for (int row = 0; row < ui->tableWidget->rowCount(); ++row) {
+            QTableWidgetItem* filePathItem = ui->tableWidget->item(row, 0);
+            QTableWidgetItem* titleItem = ui->tableWidget->item(row, 1);
+            QTableWidgetItem* artistItem = ui->tableWidget->item(row, 2);
+
+            if (filePathItem && titleItem && artistItem) {
+                if (filePathItem->text() == filePath && titleItem->text() == title && artistItem->text() == artist) {
+                    return; // Песня уже существует в таблице, выходим из функции
+                }
+            }
+        }
+
         ui->tableWidget->insertRow(ui->tableWidget->rowCount());
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 0, new QTableWidgetItem(player->source().path()));
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 1, new QTableWidgetItem(data.stringValue(QMediaMetaData::Title)));
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 2, new QTableWidgetItem(data.stringValue(QMediaMetaData::ContributingArtist)));
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 3, new QTableWidgetItem(data.stringValue(QMediaMetaData::Duration)));
+
         DataBaseHandler::instance().addTrack(player->source().path(), data.stringValue(QMediaMetaData::Title), data.stringValue(QMediaMetaData::ContributingArtist), data.stringValue(QMediaMetaData::Duration));
+        setupTableWidgetTooltips();
     }
 }
 

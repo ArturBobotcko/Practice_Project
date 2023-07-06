@@ -325,11 +325,31 @@ void MainWindow::retrieveMetadata()
     QMediaPlayer* player = qobject_cast<QMediaPlayer*>(sender());
     if (player) {
         QMediaMetaData data = player->metaData();
+
+        QString filePath = player->source().path();
+        QString title = data.stringValue(QMediaMetaData::Title);
+        QString artist = data.stringValue(QMediaMetaData::ContributingArtist);
+        QString duration = data.stringValue(QMediaMetaData::Duration);
+
+        // Проверка наличия песни в таблице
+        for (int row = 0; row < ui->tableWidget->rowCount(); ++row) {
+            QTableWidgetItem* filePathItem = ui->tableWidget->item(row, 0);
+            QTableWidgetItem* titleItem = ui->tableWidget->item(row, 1);
+            QTableWidgetItem* artistItem = ui->tableWidget->item(row, 2);
+
+            if (filePathItem && titleItem && artistItem) {
+                if (filePathItem->text() == filePath && titleItem->text() == title && artistItem->text() == artist) {
+                    return; // Песня уже существует в таблице, выходим из функции
+                }
+            }
+        }
+
         ui->tableWidget->insertRow(ui->tableWidget->rowCount());
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 0, new QTableWidgetItem(player->source().path()));
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 1, new QTableWidgetItem(data.stringValue(QMediaMetaData::Title)));
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 2, new QTableWidgetItem(data.stringValue(QMediaMetaData::ContributingArtist)));
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 3, new QTableWidgetItem(data.stringValue(QMediaMetaData::Duration)));
+
         DataBaseHandler::instance().addTrack(player->source().path(), data.stringValue(QMediaMetaData::Title), data.stringValue(QMediaMetaData::ContributingArtist), data.stringValue(QMediaMetaData::Duration));
     }
 }

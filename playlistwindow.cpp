@@ -218,17 +218,8 @@ void PlaylistWindow::showContextMenu()
 
 void PlaylistWindow::deleteTrack(int actionId, const QModelIndexList &selectedRows)
 {
-    if (selectedRows.isEmpty()) {
-        return;
-    }
-    // Отображение окна предупреждения
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Подтверждение удаления", "Вы уверены, что хотите удалить выбранный трек?", QMessageBox::Yes | QMessageBox::No);
-    if (reply == QMessageBox::No) {
-        return;
-    }
-    DataBaseHandler::instance().deleteTrack(selectedRows);
-    insertTracks();
+   // Сделать update на изменение поля айди плейлиста в нуль и форму заново выбрать короче
+
 }
 
 void PlaylistWindow::changedPlaybackState()

@@ -12,6 +12,7 @@
 #include <QtSql>
 #include <QMessageBox>
 #include <QMenu>
+#include <QCloseEvent>
 
 namespace Ui {
 class PlaylistWindow;
@@ -34,7 +35,6 @@ private slots:
     void prevTrackBtn_clicked();
     void nextTrackBtn_clicked();
     void muteBtn_clicked();
-    //void deleteBtn_clicked();
     void repeatBtn_clicked();
     void mixBtn_clicked();
     void trackSlider_sliderMoved(int position);
@@ -50,7 +50,7 @@ private slots:
     void down_buttonClicked();
     void showContextMenu();
     void deleteTrack(int actionId, const QModelIndexList &selectedRows);
-
+    void closeEvent(QCloseEvent *event);
 private:
     Ui::PlaylistWindow *ui;
     QMediaPlayer* m_player;
@@ -59,6 +59,7 @@ private:
     int pause_position;
     bool muted = false;
     int current_volume;
+    QWidget* mainWindow;
 };
 
 #endif // PLAYLISTWINDOW_H

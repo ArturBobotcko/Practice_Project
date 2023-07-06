@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     setIntefaceStyle();
     insertPlaylists();
     insertTracks();
+    setupTableWidgetTooltips();
 
     m_player = new QMediaPlayer(this);
     m_audioOutput = new QAudioOutput(this);
@@ -270,6 +271,18 @@ void MainWindow::deleteTrack(int actionId, const QModelIndexList &selectedRows)
     insertTracks();
 }
 
+void MainWindow::setupTableWidgetTooltips()
+{
+    for (int row = 0; row < ui->tableWidget->rowCount(); ++row) {
+        for (int column = 0; column < ui->tableWidget->columnCount(); ++column) {
+            QTableWidgetItem* item = ui->tableWidget->item(row, column);
+            if (item) {
+                item->setToolTip(item->text()); // Установка подсказки для элемента
+            }
+        }
+    }
+}
+
 void MainWindow::changedPlaybackState()
 {
     QIcon icon;
@@ -351,6 +364,7 @@ void MainWindow::retrieveMetadata()
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 3, new QTableWidgetItem(data.stringValue(QMediaMetaData::Duration)));
 
         DataBaseHandler::instance().addTrack(player->source().path(), data.stringValue(QMediaMetaData::Title), data.stringValue(QMediaMetaData::ContributingArtist), data.stringValue(QMediaMetaData::Duration));
+        setupTableWidgetTooltips();
     }
 }
 

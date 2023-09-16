@@ -15,71 +15,46 @@ MainWindow::MainWindow(QWidget *parent)
     insertTracks();
     setupTableWidgetTooltips();
 
-    m_player = new QMediaPlayer(this);
-    m_audioOutput = new QAudioOutput(this);
-    m_player->setAudioOutput(m_audioOutput);
-    mix = false;
-    pause_position = 0;
-
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+    ui->tableWidget->selectRow(0);
     ui->volumeSlider->setValue(50);
 
-    connect(m_player, &QMediaPlayer::positionChanged, this, &MainWindow::trackSlider_valueChanged);
-    connect(m_player, &QMediaPlayer::durationChanged, this, &MainWindow::setDuration);
-    connect(m_player, &QMediaPlayer::mediaStatusChanged, this, &MainWindow::autoPlay);
-    connect(m_player, &QMediaPlayer::playbackStateChanged, this, &MainWindow::changedPlaybackState);
-
-    connect(ui->tableWidget, &QTableWidget::cellDoubleClicked, this, &MainWindow::cellDoubleClicked);
-    connect(ui->playlist_list, &QTableWidget::cellClicked, this, &MainWindow::playlist_list_cellClicked);
-
     connect(ui->playBtn, &QPushButton::clicked, this, &MainWindow::playBtn_clicked);
-    connect(ui->addPlaylistBtn, &QPushButton::clicked, this, &MainWindow::addPlaylistBtn_clicked);
-
     connect(ui->stopTrackBtn, &QPushButton::clicked, this, &MainWindow::stopTrackBtn_clicked);
     connect(ui->prevTrackBtn, &QPushButton::clicked, this, &MainWindow::prevTrackBtn_clicked);
     connect(ui->muteBtn, &QPushButton::clicked, this, &MainWindow::muteBtn_clicked);
     connect(ui->nextTrackBtn, &QPushButton::clicked, this, &MainWindow::nextTrackBtn_clicked);
-    connect(ui->addPlaylistBtn, &QPushButton::clicked, this, &MainWindow::addPlaylistBtn_clicked);
-    connect(ui->deleteBtn, &QPushButton::clicked, this, &MainWindow::deleteBtn_clicked);
-    connect(ui->actionOpen_file, &QAction::triggered, this, &MainWindow::addTracks_clicked);
     connect(ui->repeatButton, &QPushButton::clicked, this, &MainWindow::repeatBtn_clicked);
     connect(ui->mixButton, &QPushButton::clicked, this, &MainWindow::mixBtn_clicked);
+
+    connect(m_player.get_player(), &QMediaPlayer::positionChanged, this, &MainWindow::trackSlider_valueChanged);
+    connect(m_player.get_player(), &QMediaPlayer::durationChanged, this, &MainWindow::setDuration);
+    connect(m_player.get_player(), &QMediaPlayer::mediaStatusChanged, this, &MainWindow::autoPlay);
+    connect(m_player.get_player(), &QMediaPlayer::playbackStateChanged, this, &MainWindow::changedPlaybackState);
+
+    connect(ui->tableWidget, &QTableWidget::cellDoubleClicked, this, &MainWindow::cellDoubleClicked);
+    connect(ui->playlist_list, &QTableWidget::cellClicked, this, &MainWindow::playlist_list_cellClicked);
+    connect(ui->addPlaylistBtn, &QPushButton::clicked, this, &MainWindow::addPlaylistBtn_clicked);
+    connect(ui->addPlaylistBtn, &QPushButton::clicked, this, &MainWindow::addPlaylistBtn_clicked);
+    //connect(ui->deleteBtn, &QPushButton::clicked, this, &MainWindow::deleteBtn_clicked);
+    connect(ui->actionOpen_file, &QAction::triggered, this, &MainWindow::addTracks_clicked);
     connect(ui->up_button, &QPushButton::clicked, this, &MainWindow::up_buttonClicked);
     connect(ui->down_button, &QPushButton::clicked, this, &MainWindow::down_buttonClicked);
 
     connect(ui->trackSlider, &QSlider::sliderMoved, this, &MainWindow::trackSlider_sliderMoved);
-    connect(ui->volumeSlider, &QSlider::sliderMoved, this, &MainWindow::volumeSlider_sliderMoved);
+    connect(ui->volumeSlider, &QSlider::valueChanged, this, &MainWindow::volumeSlider_sliderMoved);
     connect(ui->trackSlider, &QSlider::valueChanged, this, &MainWindow::trackSlider_valueChanged);
-    connect(ui->volumeSlider, &QSlider::valueChanged, this, &MainWindow::volumeSlider_valueChanged);
     connect(ui->playlist_list, &QTableWidget::cellDoubleClicked, this, &MainWindow::playlistDoubleClicked);
-    ui->tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->tableWidget, &QWidget::customContextMenuRequested, this, &MainWindow::showContextMenu);
-    ui->tableWidget->selectRow(0);
 
     ui->mixButton->setIconSize(QSize(25, 25));
     ui->repeatButton->setIconSize(QSize(25, 25));
     QWidget::setWindowTitle("Spotify enjoyers");
     QWidget::setWindowIcon(QIcon(":/new/prefix1/resources/play.svg"));
-}
-
-void MainWindow::playTrack()
-{
-    m_player->stop();
-    if (mix) {
-        int row = QRandomGenerator::global()->bounded(0, ui->tableWidget->rowCount());
-        ui->tableWidget->selectRow(row);
-    } else {
-        ui->tableWidget->selectRow(ui->tableWidget->currentRow());
-    }
-    QTableWidgetItem *item = ui->tableWidget->item(ui->tableWidget->currentRow(), 0);
-    if (!item) {
-        return;
-    }
-    m_player->setSource(QUrl::fromLocalFile(item->text()));
-    m_player->play();
 }
 
 void MainWindow::setIntefaceStyle()
@@ -92,7 +67,7 @@ void MainWindow::setIntefaceStyle()
 
 void MainWindow::cellDoubleClicked(int iRow, int iColumn)
 {
-    playTrack();
+
 }
 // Функция вставки списка плейлистов в виджет таблицы
 void MainWindow::insertPlaylists()
@@ -104,8 +79,7 @@ void MainWindow::insertPlaylists()
     QStringList headerLabels;
     headerLabels << "Название плейлиста";
     ui->playlist_list->setHorizontalHeaderLabels(headerLabels);
-    for (int row = 0; row < playlists->rowCount(); ++row)
-    {
+    for (int row = 0; row < playlists->rowCount(); ++row) {
         QString playlist_name = playlists->record(row).value("playlist_name").toString();
         qDebug() << playlist_name;
         QTableWidgetItem* item = new QTableWidgetItem(playlist_name);
@@ -114,7 +88,6 @@ void MainWindow::insertPlaylists()
     }
     delete playlists;
 }
-
 
 void MainWindow::insertTracks()
 {
@@ -139,7 +112,7 @@ void MainWindow::insertTracks()
 
 QStringList MainWindow::sendData()
 {
-    QMediaMetaData data = m_player->metaData();
+    QMediaMetaData data = m_player.get_metadata();
     QStringList meta = {data.stringValue(QMediaMetaData::Title), data.stringValue(QMediaMetaData::Author), data.stringValue(QMediaMetaData::Duration)};
     return meta;
 }
@@ -147,21 +120,8 @@ QStringList MainWindow::sendData()
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete m_player;
-    delete m_audioOutput;
     delete playlist_window;
     delete playlist;
-}
-
-void MainWindow::playBtn_clicked()
-{
-    if (m_player->playbackState() == QMediaPlayer::PlayingState) {
-        pause_position = m_player->position();
-        m_player->stop();
-    } else {
-        m_player->setPosition(ui->trackSlider->value());
-        playTrack();
-    }
 }
 
 void MainWindow::up_buttonClicked()
@@ -223,8 +183,6 @@ void MainWindow::showContextMenu()
 
         menu.addAction(action1);
         menu.addAction(action2);
-
-
         menu.exec(QCursor::pos());
     }
 }
@@ -244,8 +202,7 @@ void MainWindow::addTrackToPlaylist(int actionId, const QModelIndexList& selecte
         rowValues.append(columnValues);
     }
 
-    if (!selectPlaylistDialog)
-    {
+    if (!selectPlaylistDialog) {
         selectPlaylistDialog = new selectPlaylist(this);
 
     }
@@ -283,20 +240,6 @@ void MainWindow::setupTableWidgetTooltips()
     }
 }
 
-void MainWindow::changedPlaybackState()
-{
-    QIcon icon;
-    if (m_player->playbackState() == QMediaPlayer::PlayingState) {
-        icon.addFile(QString::fromUtf8(":/new/prefix1/resources/pause.svg"), QSize(), QIcon::Normal, QIcon::Off);
-    } else {
-        icon.addFile(QString::fromUtf8(":/new/prefix1/resources/play.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        ui->trackSlider->setValue(pause_position);
-    }
-    ui->playBtn->setIcon(icon);
-    ui->playBtn->setIconSize(QSize(50, 50));
-    ui->playBtn->setFlat(false);
-}
-
 void MainWindow::playlistDoubleClicked()
 {
     qDebug() << selectedPlaylist;
@@ -306,9 +249,9 @@ void MainWindow::playlistDoubleClicked()
     }
     playlist->setPlaylistName(selectedPlaylist);
     playlist->insertTracks();
-    if (m_player->playbackState() == QMediaPlayer::PlayingState) {
-        pause_position = m_player->position();
-        m_player->stop();
+    if (m_player.get_playbackState() == QMediaPlayer::PlayingState) {
+        pause_position = m_player.get_position();
+        m_player.stop_track();
     }
     hide();
     playlist->show();
@@ -330,7 +273,6 @@ void MainWindow::addTracks_clicked()
         QObject::connect(thread, &QThread::finished, thread, &QThread::deleteLater);
         thread->start();
     }
-
 }
 
 void MainWindow::retrieveMetadata()
@@ -363,16 +305,50 @@ void MainWindow::retrieveMetadata()
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 2, new QTableWidgetItem(data.stringValue(QMediaMetaData::ContributingArtist)));
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 3, new QTableWidgetItem(data.stringValue(QMediaMetaData::Duration)));
 
-        DataBaseHandler::instance().addTrack(player->source().path(), data.stringValue(QMediaMetaData::Title), data.stringValue(QMediaMetaData::ContributingArtist), data.stringValue(QMediaMetaData::Duration));
+        DataBaseHandler::instance().addTrack(player->source().path(), data.stringValue(QMediaMetaData::Title),
+                                    data.stringValue(QMediaMetaData::ContributingArtist), data.stringValue(QMediaMetaData::Duration));
         setupTableWidgetTooltips();
     }
 }
 
-void MainWindow::stopTrackBtn_clicked()
+void MainWindow::setDuration()
 {
-    m_player->stop();
-    ui->trackSlider->setValue(0);
-    pause_position = 0;
+    ui->trackSlider->setMaximum(m_player.get_duration());
+}
+
+void MainWindow::autoPlay()
+{
+    if (m_player.get_player()->mediaStatus() == QMediaPlayer::EndOfMedia) { // fukkkkkkkkkkkkk !!!!!!!!!!!!!
+            nextTrackBtn_clicked();
+    }
+}
+
+void MainWindow::playBtn_clicked()
+{
+    if (m_player.get_playbackState() == QMediaPlayer::PlayingState) {
+        pause_position = m_player.get_position();
+        m_player.stop_track();
+    } else {
+        m_player.set_position(ui->trackSlider->value());
+        playTrack();
+    }
+}
+
+void MainWindow::playTrack()
+{
+    m_player.stop_track();
+    if (m_player.is_mixed()) {
+        int row = QRandomGenerator::global()->bounded(0, ui->tableWidget->rowCount());
+        ui->tableWidget->selectRow(row);
+    } else {
+        ui->tableWidget->selectRow(ui->tableWidget->currentRow());
+    }
+    QTableWidgetItem *item = ui->tableWidget->item(ui->tableWidget->currentRow(), 0);
+    if (!item) {
+        return;
+    }
+    m_player.set_source(QUrl::fromLocalFile(item->text()));
+    m_player.play_track();
 }
 
 void MainWindow::prevTrackBtn_clicked()
@@ -395,105 +371,72 @@ void MainWindow::nextTrackBtn_clicked()
     playTrack();
 }
 
+void MainWindow::muteBtn_clicked()
+{
+    if (!m_player.is_muted()) {
+        current_volume = ui->volumeSlider->value();
+        ui->muteBtn->setIcon(QIcon(QString::fromUtf8(":/new/prefix1/resources/muted-volume.svg")));
+        m_player.set_volume(0);
+        ui->volumeSlider->setValue(0);
+        m_player.set_mute();
+    }
+    else {
+        m_player.set_volume(current_volume/100.0f);
+        ui->volumeSlider->setValue(current_volume);
+        m_player.set_mute();
+    }
+}
+
+void MainWindow::changedPlaybackState()
+{
+    QIcon icon;
+    if (m_player.get_playbackState() == QMediaPlayer::PlayingState) {
+        icon.addFile(QString::fromUtf8(":/new/prefix1/resources/pause.svg"), QSize(), QIcon::Normal, QIcon::Off);
+    } else {
+        icon.addFile(QString::fromUtf8(":/new/prefix1/resources/play.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        ui->trackSlider->setValue(pause_position);
+    }
+    ui->playBtn->setIcon(icon);
+    ui->playBtn->setIconSize(QSize(50, 50));
+    ui->playBtn->setFlat(false);
+}
+
 void MainWindow::repeatBtn_clicked()
 {
-    if (m_player->loops() == QMediaPlayer::Once) {
-        ui->repeatButton->setIcon(QIcon(":/new/prefix1/resources/repeat.svg"));
-        m_player->setLoops(QMediaPlayer::Infinite);
-    } else {
-        ui->repeatButton->setIcon(QIcon(":/new/prefix1/resources/no-repeat.svg"));
-        m_player->setLoops(QMediaPlayer::Once);
-    }
+
 }
 
 void MainWindow::mixBtn_clicked()
 {
-    if (mix) {
-        mix = false;
-    } else {
-        mix = true;
-    }
+
 }
 
-void MainWindow::autoPlay()
+void MainWindow::stopTrackBtn_clicked()
 {
-    if (m_player->mediaStatus() == m_player->EndOfMedia) {
-        nextTrackBtn_clicked();
-    }
-}
-
-void MainWindow::setDuration()
-{
-    ui->trackSlider->setMaximum(m_player->duration());
-}
-
-void MainWindow::muteBtn_clicked()
-{
-    QIcon high_vol_icon, mid_vol_icon, low_vol_icon, muted_vol_icon;
-    high_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/high-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
-    mid_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/mid-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
-    low_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/low-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
-    muted_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/muted-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
-    if (!muted)
-    {
-        current_volume = ui->volumeSlider->value();
-        ui->muteBtn->setIcon(muted_vol_icon);
-        m_audioOutput->setVolume(0);
-        ui->volumeSlider->setValue(0);
-        muted = true;
-    }
-    else
-    {
-        if (current_volume < 100 && current_volume >= 75)
-        {
-            ui->muteBtn->setIcon(high_vol_icon);
-        }
-        else if (current_volume < 75 && current_volume >= 25)
-        {
-            ui->muteBtn->setIcon(mid_vol_icon);
-        }
-        else if (current_volume < 25 && current_volume != 0)
-        {
-            ui->muteBtn->setIcon(low_vol_icon);
-        }
-        m_audioOutput->setVolume(current_volume/100.0f);
-        ui->volumeSlider->setValue(current_volume);
-        muted = false;
-    }
+    ui->trackSlider->setValue(0);
+    pause_position = 0;
+    m_player.stop_track();
 }
 
 void MainWindow::trackSlider_sliderMoved(int position)
 {
-    m_player->setPosition(position);
+    m_player.set_position(position);
 }
 
 void MainWindow::volumeSlider_sliderMoved(int position)
 {
-    float volume = position/100.0f;
-    QIcon high_vol_icon, mid_vol_icon, low_vol_icon, muted_vol_icon;
-    high_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/high-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
-    mid_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/mid-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
-    low_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/low-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
-    muted_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/muted-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
-    ui->muteBtn->setIconSize(QSize(25, 25));
-    ui->muteBtn->setFlat(false);
-    if (position < 100 && position >= 75)
-    {
-        ui->muteBtn->setIcon(high_vol_icon);
+    if (position < 100 && position >= 75) {
+        ui->muteBtn->setIcon(QIcon(QString::fromUtf8(":/new/prefix1/resources/high-volume.svg")));
     }
-    else if (position < 75 && position >= 25)
-    {
-        ui->muteBtn->setIcon(mid_vol_icon);
+    else if (position < 75 && position >= 25) {
+        ui->muteBtn->setIcon(QIcon(QString::fromUtf8(":/new/prefix1/resources/mid-volume.svg")));
     }
-    else if (position < 25 && position != 0)
-    {
-        ui->muteBtn->setIcon(low_vol_icon);
+    else if (position < 25 && position != 0) {
+        ui->muteBtn->setIcon(QIcon(QString::fromUtf8(":/new/prefix1/resources/low-volume.svg")));
+    } else {
+        ui->muteBtn->setIcon(QIcon(QString::fromUtf8(":/new/prefix1/resources/muted-volume.svg")));
     }
-    else if (position == 0)
-    {
-        ui->muteBtn->setIcon(muted_vol_icon);
-    }
-    m_audioOutput->setVolume(volume);
+    m_player.set_volume(position/100.0f);
 }
 
 void MainWindow::trackSlider_valueChanged(int value)
@@ -506,8 +449,7 @@ void MainWindow::trackSlider_valueChanged(int value)
 // Функция вызова окна для добавления плейлиста
 void MainWindow::addPlaylistBtn_clicked()
 {
-    if(!playlist_window)
-    {
+    if (!playlist_window) {
         playlist_window = new add_playlist(this);
     }
     playlist_window->show();
@@ -523,8 +465,7 @@ void MainWindow::deleteBtn_clicked()
     }
     qDebug() << selectedPlaylist;
     DataBaseHandler::instance().deletePlaylist(selectedPlaylist);
-    if (!selectedPlaylist.isEmpty())
-    {
+    if (!selectedPlaylist.isEmpty()) {
         ui->playlist_list->removeRow(rowOnDelete);
     }
     selectedPlaylist.clear();
@@ -536,33 +477,4 @@ void MainWindow::playlist_list_cellClicked(int row, int column)
     QString value = ui->playlist_list->item(row, column)->text();
     selectedPlaylist = value;
     rowOnDelete = row;
-}
-
-void MainWindow::volumeSlider_valueChanged(int value)
-{
-    float volume = value/100.0f;
-    QIcon high_vol_icon, mid_vol_icon, low_vol_icon, muted_vol_icon;
-    high_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/high-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
-    mid_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/mid-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
-    low_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/low-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
-    muted_vol_icon.addFile(QString::fromUtf8(":/new/prefix1/resources/muted-volume.svg"), QSize(), QIcon::Normal, QIcon::Off);
-    ui->muteBtn->setIconSize(QSize(25, 25));
-    ui->muteBtn->setFlat(false);
-    if (value < 100 && value >= 75)
-    {
-        ui->muteBtn->setIcon(high_vol_icon);
-    }
-    else if (value < 75 && value >= 25)
-    {
-        ui->muteBtn->setIcon(mid_vol_icon);
-    }
-    else if (value < 25 && value != 0)
-    {
-        ui->muteBtn->setIcon(low_vol_icon);
-    }
-    else if (value == 0)
-    {
-        ui->muteBtn->setIcon(muted_vol_icon);
-    }
-    m_audioOutput->setVolume(volume);
 }

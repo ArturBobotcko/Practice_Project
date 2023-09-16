@@ -1,11 +1,18 @@
 #include "musicplayer.h"
 
+musicPlayer& musicPlayer::instance()
+{
+    static musicPlayer instance;
+    return instance;
+}
+
 musicPlayer::musicPlayer()
 {
     m_player = new QMediaPlayer;
     m_audioOutput = new QAudioOutput;
     m_player->setAudioOutput(m_audioOutput);
-    mix = false;
+    mixed = false;
+    muted = false;
     pause_position = 0;
 }
 
@@ -15,86 +22,82 @@ musicPlayer::~musicPlayer()
     delete m_audioOutput;
 }
 
-void musicPlayer::playTrack(QString& path)
+QMediaMetaData musicPlayer::get_metadata()
 {
-    m_player->stop();
-    m_player->setSource(path);
-    //m_player->setSource(QUrl::fromLocalFile(item->text())); // path variable ?
+    return m_player->metaData();
+}
+
+QMediaPlayer::PlaybackState musicPlayer::get_playbackState()
+{
+    return m_player->playbackState();
+}
+
+qint64 musicPlayer::get_position()
+{
+    return m_player->position();
+}
+
+qint64 musicPlayer::get_duration()
+{
+    return m_player->duration();
+}
+
+void musicPlayer::set_position(qint64 pos)
+{
+    m_player->setPosition(pos);
+}
+
+void musicPlayer::play_track()
+{
     m_player->play();
 }
 
-void musicPlayer::playBtn_clicked()
-{
-    if (m_player->playbackState() == QMediaPlayer::PlayingState) {
-        pause_position = m_player->position();
-        m_player->stop();
-    } else {
-        //m_player->setPosition(ui->trackSlider->value()); // wtf
-        playTrack();
-    }
-}
-
-void musicPlayer::stopTrackBtn_clicked()
+void musicPlayer::stop_track()
 {
     m_player->stop();
-    pause_position = 0;
 }
 
-void musicPlayer::prevTrackBtn_clicked()
+bool musicPlayer::is_mixed()
 {
-    playBtn_clicked();
+    return mixed;
 }
 
-void musicPlayer::nextTrackBtn_clicked()
+bool musicPlayer::is_repeated()
 {
-    playBtn_clicked();
+    return repeated;
 }
 
-void musicPlayer::repeatBtn_clicked()
+bool musicPlayer::is_muted()
 {
-    if (m_player->loops() == QMediaPlayer::Once) {
-        m_player->setLoops(QMediaPlayer::Infinite);
-    } else {
-        m_player->setLoops(QMediaPlayer::Once);
-    }
+    return muted;
 }
 
-void musicPlayer::mixBtn_clicked()
+void musicPlayer::set_mix()
 {
-    if (mix) {
-        mix = false;
-    } else {
-        mix = true;
-    }
+    mixed = !mixed;
 }
 
-void musicPlayer::autoPlay()
+void musicPlayer::set_mute()
 {
-    if (m_player->mediaStatus() == m_player->EndOfMedia) {
-        nextTrackBtn_clicked();
-    }
+    muted = !muted;
 }
 
-void musicPlayer::muteBtn_clicked()
+void musicPlayer::set_repeat()
 {
-    if (!muted)
-    {
-        m_audioOutput->setVolume(0);
-        muted = true;
-    }
-    else
-    {
-        m_audioOutput->setVolume(current_volume/100.0f);
-        muted = false;
-    }
+    repeated = !repeated;
 }
 
-void musicPlayer::volumeSlider_sliderMoved(int position)
+void musicPlayer::set_volume(float volume)
 {
-    m_audioOutput->setVolume(position/100.0f);
+    m_audioOutput->setVolume(volume);
 }
 
-void musicPlayer::volumeSlider_valueChanged(int value)
+QMediaPlayer *musicPlayer::get_player()
 {
-    m_audioOutput->setVolume(value/100.0f);
+    return m_player;
+}
+
+void musicPlayer::set_source(const QUrl& path)
+{
+    m_player->setSource(path);
 }

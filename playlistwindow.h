@@ -2,8 +2,6 @@
 #define PLAYLISTWINDOW_H
 
 #include <QMainWindow>
-#include <QMediaPlayer>
-#include <QAudioOutput>
 #include <QFileDialog>
 #include <QDebug>
 #include <QMediaMetaData>
@@ -13,6 +11,7 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <QCloseEvent>
+#include "musicplayer.h"
 
 namespace Ui {
 class PlaylistWindow;
@@ -43,22 +42,16 @@ private slots:
     void setDuration();
     void cellDoubleClicked(int iRow, int iColumn);
     void playTrack();
-    void volumeSlider_valueChanged(int value);
-    void autoPlay();
     void changedPlaybackState();
     void up_buttonClicked();
     void down_buttonClicked();
     void showContextMenu();
     void deleteTrack(int actionId, const QModelIndexList &selectedRows);
     void closeEvent(QCloseEvent *event);
+
 private:
     Ui::PlaylistWindow *ui;
-    QMediaPlayer* m_player;
-    QAudioOutput* m_audioOutput;
-    bool mix;
-    int pause_position;
-    bool muted = false;
-    int current_volume;
+    musicPlayer& m_player = musicPlayer::instance();
     QWidget* mainWindow;
 };
 

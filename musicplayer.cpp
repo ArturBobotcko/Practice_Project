@@ -42,6 +42,21 @@ qint64 musicPlayer::get_duration()
     return m_player->duration();
 }
 
+quint64 musicPlayer::get_pause_position()
+{
+    return pause_position;
+}
+
+quint64 musicPlayer::get_current_volume()
+{
+    return current_volume;
+}
+
+void musicPlayer::set_current_volume(quint64 volume)
+{
+    current_volume = volume;
+}
+
 void musicPlayer::set_position(qint64 pos)
 {
     m_player->setPosition(pos);
@@ -90,6 +105,11 @@ void musicPlayer::set_repeat()
 void musicPlayer::set_volume(float volume)
 {
     m_audioOutput->setVolume(volume);
+}
+
+void musicPlayer::set_pause_position(quint64 position)
+{
+    pause_position = position;
 }
 
 QMediaPlayer *musicPlayer::get_player()

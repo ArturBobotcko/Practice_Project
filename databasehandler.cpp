@@ -59,22 +59,19 @@ bool DataBaseHandler::addPlaylist(const QString& playlist_name)
     QString query_text = QString("INSERT OR IGNORE INTO Playlists(playlist_name) VALUES ('%1')").arg(playlist_name);
     connectToDataBase(db);
     query.exec(selectQuery);
-    if (query.next())
-    {
+    if (query.next()) {
         qDebug() << "Playlist with name " << playlist_name << " already exists.";
         return false;
     }
-    else
-    {
-        if(!query.exec(query_text))
-        {
+    else {
+        if (!query.exec(query_text)) {
             qDebug() << "Unable to insert into 'Playlists' table: " + query.lastError().text();
             return false;
         }
         qDebug() << "Playlist " << playlist_name << " added!";
-        return true;
     }
     db.close();
+    return true;
 }
 
 // Функция удаления записи из таблицы
@@ -143,29 +140,24 @@ bool DataBaseHandler::addTrack(const QString& path_value, const QString& track_n
     QString selectQuery = QString("SELECT * FROM AllTracks WHERE track_name='%1' AND author='%2' AND duration='%3'").arg(track_name).arg(artist).arg(duration_value);
     QString query_text = QString("INSERT OR IGNORE INTO AllTracks(path, track_name, author, duration) VALUES ('%1', '%2', '%3', '%4')").arg(path).arg(track_name).arg(artist).arg(duration_value);
     query.exec(selectQuery);
-    if(query.next())
-    {
+    if (query.next()) {
         qDebug() << "This track already added!";
         return false;
     }
-    if(!query.exec(query_text))
-    {
+    if (!query.exec(query_text)) {
         qDebug() << "Unable to insert into 'AllTracks"
                     "' table: " + query.lastError().text();
         return false;
     }
-    if (query.next())
-    {
+    if (query.next()) {
         qDebug() << "Track with name " << track_name << " already exists.";
         return false;
     }
-    else
-    {
-
+    else {
         qDebug() << "Track " << track_name << " added!";
-        return true;
     }
     db.close();
+    return true;
 }
 
 // Функция получения списка всех треков из БД

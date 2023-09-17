@@ -5,7 +5,7 @@
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow)
+    : QMainWindow(parent), ui(new Ui::MainWindow), playlist_window(nullptr), selectPlaylistDialog(nullptr), playlist(nullptr)
 {
     DataBaseHandler& dbhandler = DataBaseHandler::instance();
     dbhandler.createDataBase();
@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->playlist_list, &QTableWidget::cellClicked, this, &MainWindow::playlist_list_cellClicked);
     connect(ui->addPlaylistBtn, &QPushButton::clicked, this, &MainWindow::addPlaylistBtn_clicked);
     connect(ui->addPlaylistBtn, &QPushButton::clicked, this, &MainWindow::addPlaylistBtn_clicked);
-    //connect(ui->deleteBtn, &QPushButton::clicked, this, &MainWindow::deleteBtn_clicked);
+    connect(ui->deleteBtn, &QPushButton::clicked, this, &MainWindow::deleteBtn_clicked);
     connect(ui->actionOpen_file, &QAction::triggered, this, &MainWindow::addTracks_clicked);
     connect(ui->up_button, &QPushButton::clicked, this, &MainWindow::up_buttonClicked);
     connect(ui->down_button, &QPushButton::clicked, this, &MainWindow::down_buttonClicked);
@@ -67,9 +67,9 @@ void MainWindow::setIntefaceStyle()
 
 void MainWindow::cellDoubleClicked(int iRow, int iColumn)
 {
-
+    playTrack();
 }
-// Функция вставки списка плейлистов в виджет таблицы
+
 void MainWindow::insertPlaylists()
 {
     QSqlQueryModel* playlists = DataBaseHandler::instance().getPlaylists();
@@ -93,8 +93,7 @@ void MainWindow::insertTracks()
 {
     QSqlQueryModel* track= DataBaseHandler::instance().getTracks();
     ui->tableWidget->setRowCount(track->rowCount());
-    for (int row = 0; row < track->rowCount(); ++row)
-    {
+    for (int row = 0; row < track->rowCount(); ++row) {
         QString path = track->record(row).value("path").toString();
         QString track_name = track->record(row).value("track_name").toString();
         QString author = track->record(row).value("author").toString();
@@ -170,17 +169,14 @@ void MainWindow::showContextMenu()
     QModelIndexList selectedRows = selectionModel->selectedRows();
     if (!selectedRows.isEmpty()) {
         QMenu menu(this);
-
         QAction* action1 = new QAction("Добавить в плейлист", this);
         connect(action1, &QAction::triggered, [this, selectedRows]() {
             addTrackToPlaylist(1, selectedRows);
         });
-
         QAction* action2 = new QAction("Удалить трек", this);
         connect(action2, &QAction::triggered, [this, selectedRows]() {
             deleteTrack(2, selectedRows);
         });
-
         menu.addAction(action1);
         menu.addAction(action2);
         menu.exec(QCursor::pos());
@@ -209,7 +205,6 @@ void MainWindow::addTrackToPlaylist(int actionId, const QModelIndexList& selecte
     selectPlaylistDialog->setRowValues(rowValues);
     selectPlaylistDialog->fullComboBox();
     selectPlaylistDialog->show();
-
     qDebug() << "Выполнено действие" << actionId << "для строк:" << rowValues;
 }
 
@@ -250,7 +245,7 @@ void MainWindow::playlistDoubleClicked()
     playlist->setPlaylistName(selectedPlaylist);
     playlist->insertTracks();
     if (m_player.get_playbackState() == QMediaPlayer::PlayingState) {
-        pause_position = m_player.get_position();
+        m_player.set_pause_position(m_player.get_position());
         m_player.stop_track();
     }
     hide();
@@ -298,13 +293,15 @@ void MainWindow::retrieveMetadata()
                 }
             }
         }
-
         ui->tableWidget->insertRow(ui->tableWidget->rowCount());
-        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 0, new QTableWidgetItem(player->source().path()));
-        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 1, new QTableWidgetItem(data.stringValue(QMediaMetaData::Title)));
-        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 2, new QTableWidgetItem(data.stringValue(QMediaMetaData::ContributingArtist)));
-        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 3, new QTableWidgetItem(data.stringValue(QMediaMetaData::Duration)));
-
+        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 0,
+                                 new QTableWidgetItem(player->source().path()));
+        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 1,
+                                 new QTableWidgetItem(data.stringValue(QMediaMetaData::Title)));
+        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 2,
+                                 new QTableWidgetItem(data.stringValue(QMediaMetaData::ContributingArtist)));
+        ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 3,
+                                 new QTableWidgetItem(data.stringValue(QMediaMetaData::Duration)));
         DataBaseHandler::instance().addTrack(player->source().path(), data.stringValue(QMediaMetaData::Title),
                                     data.stringValue(QMediaMetaData::ContributingArtist), data.stringValue(QMediaMetaData::Duration));
         setupTableWidgetTooltips();
@@ -326,7 +323,7 @@ void MainWindow::autoPlay()
 void MainWindow::playBtn_clicked()
 {
     if (m_player.get_playbackState() == QMediaPlayer::PlayingState) {
-        pause_position = m_player.get_position();
+        m_player.set_pause_position(m_player.get_position());
         m_player.stop_track();
     } else {
         m_player.set_position(ui->trackSlider->value());
@@ -374,15 +371,15 @@ void MainWindow::nextTrackBtn_clicked()
 void MainWindow::muteBtn_clicked()
 {
     if (!m_player.is_muted()) {
-        current_volume = ui->volumeSlider->value();
+        m_player.set_current_volume(ui->volumeSlider->value());
         ui->muteBtn->setIcon(QIcon(QString::fromUtf8(":/new/prefix1/resources/muted-volume.svg")));
         m_player.set_volume(0);
         ui->volumeSlider->setValue(0);
         m_player.set_mute();
     }
     else {
-        m_player.set_volume(current_volume/100.0f);
-        ui->volumeSlider->setValue(current_volume);
+        m_player.set_volume(m_player.get_current_volume()/100.0f);
+        ui->volumeSlider->setValue(m_player.get_current_volume());
         m_player.set_mute();
     }
 }
@@ -394,27 +391,33 @@ void MainWindow::changedPlaybackState()
         icon.addFile(QString::fromUtf8(":/new/prefix1/resources/pause.svg"), QSize(), QIcon::Normal, QIcon::Off);
     } else {
         icon.addFile(QString::fromUtf8(":/new/prefix1/resources/play.svg"), QSize(), QIcon::Normal, QIcon::Off);
-        ui->trackSlider->setValue(pause_position);
+        ui->trackSlider->setValue(m_player.get_pause_position());
     }
     ui->playBtn->setIcon(icon);
     ui->playBtn->setIconSize(QSize(50, 50));
     ui->playBtn->setFlat(false);
 }
 
-void MainWindow::repeatBtn_clicked()
+void MainWindow::repeatBtn_clicked() // wtf
 {
-
+    if (m_player.get_player()->loops() == QMediaPlayer::Once) {
+        ui->repeatButton->setIcon(QIcon(":/new/prefix1/resources/repeat.svg"));
+        m_player.get_player()->setLoops(QMediaPlayer::Infinite);
+    } else {
+        ui->repeatButton->setIcon(QIcon(":/new/prefix1/resources/no-repeat.svg"));
+        m_player.get_player()->setLoops(QMediaPlayer::Once);
+    }
 }
 
 void MainWindow::mixBtn_clicked()
 {
-
+    m_player.set_mix();
 }
 
 void MainWindow::stopTrackBtn_clicked()
 {
     ui->trackSlider->setValue(0);
-    pause_position = 0;
+    m_player.set_pause_position(0);
     m_player.stop_track();
 }
 
@@ -425,7 +428,7 @@ void MainWindow::trackSlider_sliderMoved(int position)
 
 void MainWindow::volumeSlider_sliderMoved(int position)
 {
-    if (position < 100 && position >= 75) {
+    if (position <= 100 && position >= 75) {
         ui->muteBtn->setIcon(QIcon(QString::fromUtf8(":/new/prefix1/resources/high-volume.svg")));
     }
     else if (position < 75 && position >= 25) {
@@ -446,7 +449,6 @@ void MainWindow::trackSlider_valueChanged(int value)
     ui->trackSlider->setValue(value);
 }
 
-// Функция вызова окна для добавления плейлиста
 void MainWindow::addPlaylistBtn_clicked()
 {
     if (!playlist_window) {
@@ -455,11 +457,11 @@ void MainWindow::addPlaylistBtn_clicked()
     playlist_window->show();
 }
 
-// Функция удаления плейлиста по кнопке
 void MainWindow::deleteBtn_clicked()
 {
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Подтверждение удаления", "Вы уверены, что хотите удалить выбранный плейлист?", QMessageBox::Yes | QMessageBox::No);
+    reply = QMessageBox::question(this, "Подтверждение удаления",
+                            "Вы уверены, что хотите удалить выбранный плейлист?", QMessageBox::Yes | QMessageBox::No);
     if (reply == QMessageBox::No) {
         return;
     }
@@ -471,7 +473,6 @@ void MainWindow::deleteBtn_clicked()
     selectedPlaylist.clear();
 }
 
-// Функция выбора имени плейлиста по клику на него
 void MainWindow::playlist_list_cellClicked(int row, int column)
 {
     QString value = ui->playlist_list->item(row, column)->text();

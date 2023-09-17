@@ -2,8 +2,6 @@
 #define MainWindow_H
 
 #include <QMainWindow>
-#include <QMediaPlayer>
-#include <QAudioOutput>
 #include <QFileDialog>
 #include <QDebug>
 #include <QMediaMetaData>
@@ -57,17 +55,15 @@ private slots:
 
 private:
     Ui_MainWindow *ui;
-    int pause_position;
-    add_playlist* playlist_window = nullptr;
+    musicPlayer& m_player = musicPlayer::instance();
+    add_playlist* playlist_window;
     QString selectedPlaylist;
-    int rowOnDelete;
-    int current_volume;
-    PlaylistWindow* playlist = nullptr;
-    void addTrackToPlaylist(int actionId, const QModelIndexList& selectedRows);
-    selectPlaylist* selectPlaylistDialog = nullptr;
+    selectPlaylist* selectPlaylistDialog;
     QStringList rowValues;
+    PlaylistWindow* playlist;
+    int rowOnDelete;
+    void addTrackToPlaylist(int actionId, const QModelIndexList& selectedRows);
     void deleteTrack(int actionId, const QModelIndexList& selectedRows);
     void setupTableWidgetTooltips();
-    musicPlayer& m_player = musicPlayer::instance();
 };
 #endif // MAINWINDOW_H

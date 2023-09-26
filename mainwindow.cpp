@@ -261,6 +261,7 @@ void MainWindow::addTracks_clicked()
         player->moveToThread(thread);
         QObject::connect(thread, &QThread::started, player, &QMediaPlayer::play);
         QObject::connect(player, &QMediaPlayer::mediaStatusChanged, this, &MainWindow::retrieveMetadata);
+        QObject::connect(this, &MainWindow::metadataRetrieved, thread, &QThread::quit);
         QObject::connect(thread, &QThread::finished, player, &QMediaPlayer::stop);
         QObject::connect(thread, &QThread::finished, thread, &QThread::deleteLater);
         thread->start();
@@ -309,6 +310,7 @@ void MainWindow::retrieveMetadata()
         DataBaseHandler::instance().addTrack(filePath, title, artist, duration);
         setupTableWidgetTooltips();
     }
+    emit metadataRetrieved();
 }
 
 void MainWindow::setDuration()

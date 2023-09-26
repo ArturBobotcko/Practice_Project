@@ -27,6 +27,9 @@ public:
     void insertTracks();
     QStringList sendData();
 
+signals: // Add this section to declare the signal
+    void metadataRetrieved();
+
 private slots:
     void addTracks_clicked();
     void addPlaylistBtn_clicked();

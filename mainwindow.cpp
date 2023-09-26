@@ -98,21 +98,18 @@ void MainWindow::insertTracks()
         QString track_name = track->record(row).value("track_name").toString();
         QString author = track->record(row).value("author").toString();
         QString duration = track->record(row).value("duration").toString();
-        QTableWidgetItem* item = new QTableWidgetItem(path);
-        QTableWidgetItem* item2 = new QTableWidgetItem(track_name);
-        QTableWidgetItem* item3 = new QTableWidgetItem(author);
-        QTableWidgetItem* item4 = new QTableWidgetItem(duration);
-        ui->tableWidget->setItem(row, 0, item);
-        ui->tableWidget->setItem(row, 1, item2);
-        ui->tableWidget->setItem(row, 2, item3);
-        ui->tableWidget->setItem(row, 3, item4);
+        ui->tableWidget->setItem(row, 0, new QTableWidgetItem(path));
+        ui->tableWidget->setItem(row, 1, new QTableWidgetItem(track_name));
+        ui->tableWidget->setItem(row, 2, new QTableWidgetItem(author));
+        ui->tableWidget->setItem(row, 3, new QTableWidgetItem(duration));
     }
 }
 
 QStringList MainWindow::sendData()
 {
     QMediaMetaData data = m_player.get_metadata();
-    QStringList meta = {data.stringValue(QMediaMetaData::Title), data.stringValue(QMediaMetaData::Author), data.stringValue(QMediaMetaData::Duration)};
+    QStringList meta = {data.stringValue(QMediaMetaData::Title), data.stringValue(QMediaMetaData::Author),
+                        data.stringValue(QMediaMetaData::Duration)};
     return meta;
 }
 
@@ -121,6 +118,7 @@ MainWindow::~MainWindow()
     delete ui;
     delete playlist_window;
     delete playlist;
+    delete selectPlaylistDialog;
 }
 
 void MainWindow::up_buttonClicked()
@@ -213,9 +211,9 @@ void MainWindow::deleteTrack(int actionId, const QModelIndexList &selectedRows)
     if (selectedRows.isEmpty()) {
         return;
     }
-    // Отображение окна предупреждения
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Подтверждение удаления", "Вы уверены, что хотите удалить выбранный трек?", QMessageBox::Yes | QMessageBox::No);
+    reply = QMessageBox::question(this, "Подтверждение удаления", "Вы уверены, что хотите удалить выбранный трек?",
+                                QMessageBox::Yes | QMessageBox::No);
     if (reply == QMessageBox::No) {
         return;
     }
@@ -229,7 +227,7 @@ void MainWindow::setupTableWidgetTooltips()
         for (int column = 0; column < ui->tableWidget->columnCount(); ++column) {
             QTableWidgetItem* item = ui->tableWidget->item(row, column);
             if (item) {
-                item->setToolTip(item->text()); // Установка подсказки для элемента
+                item->setToolTip(item->text());
             }
         }
     }
@@ -238,8 +236,7 @@ void MainWindow::setupTableWidgetTooltips()
 void MainWindow::playlistDoubleClicked()
 {
     qDebug() << selectedPlaylist;
-    if(!playlist)
-    {
+    if (!playlist) {
         playlist = new PlaylistWindow(this);
     }
     playlist->setPlaylistName(selectedPlaylist);
@@ -275,13 +272,20 @@ void MainWindow::retrieveMetadata()
     QMediaPlayer* player = qobject_cast<QMediaPlayer*>(sender());
     if (player) {
         QMediaMetaData data = player->metaData();
-
         QString filePath = player->source().path();
         QString title = data.stringValue(QMediaMetaData::Title);
-        QString artist = data.stringValue(QMediaMetaData::ContributingArtist);
         QString duration = data.stringValue(QMediaMetaData::Duration);
-
-        // Проверка наличия песни в таблице
+        QString artist = data.stringValue(QMediaMetaData::ContributingArtist);
+        for (auto item : data.keys()) {
+            qDebug() << item;
+        }
+        if (title.isEmpty()) {
+            auto position = filePath.lastIndexOf('/') + 1;
+            title = filePath.sliced(position);
+        }
+        auto cover = data[data.ThumbnailImage];
+        QImage image = cover.value<QImage>();
+        ui->cover->setPixmap(QPixmap::fromImage(image));
         for (int row = 0; row < ui->tableWidget->rowCount(); ++row) {
             QTableWidgetItem* filePathItem = ui->tableWidget->item(row, 0);
             QTableWidgetItem* titleItem = ui->tableWidget->item(row, 1);
@@ -295,15 +299,14 @@ void MainWindow::retrieveMetadata()
         }
         ui->tableWidget->insertRow(ui->tableWidget->rowCount());
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 0,
-                                 new QTableWidgetItem(player->source().path()));
+                                 new QTableWidgetItem(filePath));
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 1,
-                                 new QTableWidgetItem(data.stringValue(QMediaMetaData::Title)));
+                                 new QTableWidgetItem(title));
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 2,
-                                 new QTableWidgetItem(data.stringValue(QMediaMetaData::ContributingArtist)));
+                                 new QTableWidgetItem(artist));
         ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, 3,
-                                 new QTableWidgetItem(data.stringValue(QMediaMetaData::Duration)));
-        DataBaseHandler::instance().addTrack(player->source().path(), data.stringValue(QMediaMetaData::Title),
-                                    data.stringValue(QMediaMetaData::ContributingArtist), data.stringValue(QMediaMetaData::Duration));
+                                 new QTableWidgetItem(duration));
+        DataBaseHandler::instance().addTrack(filePath, title, artist, duration);
         setupTableWidgetTooltips();
     }
 }

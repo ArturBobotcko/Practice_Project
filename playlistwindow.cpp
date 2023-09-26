@@ -88,7 +88,7 @@ void PlaylistWindow::insertTracks()
         QString selectTracksQuery = QString("SELECT * FROM AllTracks WHERE id_playlist = %1").arg(id_playlist);
         query->setQuery(selectTracksQuery);
         qDebug() << query->rowCount();
-        // Установка количества строк в таблице playlistTracks
+
         ui->playlistTracks->setRowCount(query->rowCount());
         ui->playlistTracks->setColumnCount(4);
         for (int row = 0; row < query->rowCount(); ++row) {
@@ -99,7 +99,6 @@ void PlaylistWindow::insertTracks()
                 if (value.isValid()) {
                     QString cellValue = value.toString();
                     qDebug() << row << ": " << cellValue;
-                    // Установка значений в каждую колонку
                     QTableWidgetItem *item = new QTableWidgetItem(cellValue);
                     ui->playlistTracks->setItem(row, column - 1, item);
                 } else {
@@ -134,7 +133,6 @@ void PlaylistWindow::cellDoubleClicked(int iRow, int iColumn)
 {
     playTrack();
 }
-// Функция вставки списка плейлистов в виджет таблицы
 
 void PlaylistWindow::playBtn_clicked()
 {
@@ -221,15 +219,13 @@ void PlaylistWindow::deleteTrack(int actionId, const QModelIndexList &selectedRo
         }
         rowValues.append(columnValues);
     }
-   // Сделать update на изменение поля айди плейлиста в нуль и форму заново выбрать короче
-    int currentPlaylistId; // Ваш способ получения текущего id плейлиста
+    int currentPlaylistId;
     qDebug() << selectedRows.at(1);
-    // Выполнение SQL-запроса для обновления полей id_playlist в таблице AllTracks
     QSqlQuery query;
     query.prepare("SELECT id FROM Playlists WHERE name = :playlistName");
     query.bindValue(":playlistName", ui->playlistName->text());
     if (query.exec() && query.next()) {
-        currentPlaylistId = query.value(0).toInt(); // Получение значения идентификатора плейлиста из первого столбца
+        currentPlaylistId = query.value(0).toInt();
     }
     query.prepare("UPDATE AllTracks SET id_playlist = NULL WHERE id_playlist = :playlistId AND path = :path AND track_name = :track_name AND author = :author AND duration = :duration");
     query.bindValue(":playlistId", currentPlaylistId);

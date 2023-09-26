@@ -12,10 +12,10 @@ class DataBaseHandler
 {
 private:
     DataBaseHandler();
-    DataBaseHandler(const DataBaseHandler&) = delete;
-    DataBaseHandler& operator=(const DataBaseHandler&) = delete;
+    DataBaseHandler(const DataBaseHandler&);
+    DataBaseHandler& operator=(const DataBaseHandler&);
     QSqlDatabase db;
-    void connectToDataBase(QSqlDatabase db);
+    void connectToDataBase(QSqlDatabase& db);
 public:
     static DataBaseHandler& instance();
     void createDataBase();
@@ -24,7 +24,7 @@ public:
     QSqlQueryModel* getPlaylists();
     bool addTrack(const QString& path_value, const QString& track_name, const QString& author_value, const QString& duration_value);
     QSqlQueryModel* getTracks();
-    void deleteTrack(const QModelIndexList &selectedRows);
+    void deleteTrack(const QModelIndexList& selectedRows);
 };
 
 #endif // DATABASEHANDLER_H

@@ -11,10 +11,9 @@ DataBaseHandler& DataBaseHandler::instance()
 }
 
 // Функция присоединения к базе данных
-void DataBaseHandler::connectToDataBase(QSqlDatabase db)
+void DataBaseHandler::connectToDataBase(QSqlDatabase& db)
 {
-    if(!db.open())
-    {
+    if (!db.open()) {
         qDebug() << "Unable to connect to database: " << db.lastError().text();
         return;
     }
@@ -32,18 +31,15 @@ void DataBaseHandler::createDataBase()
     connectToDataBase(db);
     QSqlQuery query;
     // Если таблицы Playlists нет, создаем её
-    if (!db.tables().contains("Playlists"))
-    {
+    if (!db.tables().contains("Playlists")) {
         query.exec("CREATE TABLE Playlists"
                    "(id integer primary key,"
                    "playlist_name varchar(40)"
                    ")");
-        if (query.lastError().isValid())
-        {
+        if (query.lastError().isValid()) {
             qDebug() << "Unable to create table 'Playlists': " << query.lastError().text();
         }
-        else
-        {
+        else {
             qDebug() << "Table 'Playlists' created.";
         }
     }
@@ -81,17 +77,14 @@ void DataBaseHandler::deletePlaylist(const QString &playlist_name)
     {
         QSqlQuery query;
         QString deleteQuery = QString("DELETE FROM Playlists WHERE playlist_name = '%1'").arg(playlist_name);
-        if(!query.exec(deleteQuery))
-        {
+        if(!query.exec(deleteQuery)) {
             qDebug() << "Unable to delete playlist from 'Playlists' table: " + query.lastError().text();
         }
-        else
-        {
+        else {
             qDebug() << "Playlist " << playlist_name << " deleted!";
         }
     }
-    else
-    {
+    else {
         qDebug() << "Unable to delete playlist with empty name";
     }
 }
@@ -102,8 +95,7 @@ QSqlQueryModel* DataBaseHandler::getPlaylists()
     connectToDataBase(db);
     QSqlQueryModel* query = new QSqlQueryModel();
     query->setQuery("SELECT * FROM Playlists");
-    if(query->lastError().isValid())
-    {
+    if(query->lastError().isValid()) {
         qDebug() << "Unable to select from 'Playlists' table: " + query->lastError().text();
     }
     return query;
@@ -114,8 +106,7 @@ bool DataBaseHandler::addTrack(const QString& path_value, const QString& track_n
     connectToDataBase(db);
     QSqlQuery query;
     qDebug() << "TEST: " << db.tables().contains("AllTracks");
-    if (!db.tables().contains("AllTracks"))
-    {
+    if (!db.tables().contains("AllTracks")) {
         qDebug() << "There is no table 'AllTracks'. Creating...";
         if(!query.exec("CREATE TABLE AllTracks"
                    "(id integer primary key,"
@@ -125,9 +116,8 @@ bool DataBaseHandler::addTrack(const QString& path_value, const QString& track_n
                    "duration integer,"
                    "id_playlist integer"
                        ")"))
-        {
-            qDebug() << query.lastError().text();
-        }
+
+         qDebug() << query.lastError().text();
     }
 
     QString path = path_value;
@@ -135,7 +125,6 @@ bool DataBaseHandler::addTrack(const QString& path_value, const QString& track_n
     path.replace("'","''");
     artist.replace("'","''");
     qDebug() << path;
-
 
     QString selectQuery = QString("SELECT * FROM AllTracks WHERE track_name='%1' AND author='%2' AND duration='%3'").arg(track_name).arg(artist).arg(duration_value);
     QString query_text = QString("INSERT OR IGNORE INTO AllTracks(path, track_name, author, duration) VALUES ('%1', '%2', '%3', '%4')").arg(path).arg(track_name).arg(artist).arg(duration_value);

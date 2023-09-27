@@ -27,7 +27,7 @@ public:
     void insertTracks();
     QStringList sendData();
 
-signals: // Add this section to declare the signal
+signals:
     void metadataRetrieved();
 
 private slots:
@@ -55,6 +55,7 @@ private slots:
     void muteBtn_clicked();
     void repeatBtn_clicked();
     void mixBtn_clicked();
+    void set_cover();
 
 private:
     Ui_MainWindow *ui;

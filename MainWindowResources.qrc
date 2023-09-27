@@ -15,5 +15,6 @@
         <file>resources/mix.svg</file>
         <file>resources/downButton.svg</file>
         <file>resources/upButton.svg</file>
+        <file>resources/question-mark.svg</file>
     </qresource>
 </RCC>

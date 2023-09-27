@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_player.get_player(), &QMediaPlayer::positionChanged, this, &MainWindow::trackSlider_valueChanged);
     connect(m_player.get_player(), &QMediaPlayer::durationChanged, this, &MainWindow::setDuration);
     connect(m_player.get_player(), &QMediaPlayer::mediaStatusChanged, this, &MainWindow::autoPlay);
+    connect(m_player.get_player(), &QMediaPlayer::mediaStatusChanged, this, &MainWindow::set_cover);
     connect(m_player.get_player(), &QMediaPlayer::playbackStateChanged, this, &MainWindow::changedPlaybackState);
 
     connect(ui->tableWidget, &QTableWidget::cellDoubleClicked, this, &MainWindow::cellDoubleClicked);
@@ -54,7 +55,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->mixButton->setIconSize(QSize(25, 25));
     ui->repeatButton->setIconSize(QSize(25, 25));
     QWidget::setWindowTitle("Spotify enjoyers");
-    QWidget::setWindowIcon(QIcon(":/new/prefix1/resources/play.svg"));
+    QIcon empty_cover(QString::fromUtf8(":/new/prefix1/resources/question-mark.svg"));
+    ui->cover->setPixmap(empty_cover.pixmap(QSize(50, 50)));
 }
 
 void MainWindow::setIntefaceStyle()
@@ -277,16 +279,12 @@ void MainWindow::retrieveMetadata()
         QString title = data.stringValue(QMediaMetaData::Title);
         QString duration = data.stringValue(QMediaMetaData::Duration);
         QString artist = data.stringValue(QMediaMetaData::ContributingArtist);
-        for (auto item : data.keys()) {
-            qDebug() << item;
-        }
+
         if (title.isEmpty()) {
             auto position = filePath.lastIndexOf('/') + 1;
             title = filePath.sliced(position);
         }
-        auto cover = data[data.ThumbnailImage];
-        QImage image = cover.value<QImage>();
-        ui->cover->setPixmap(QPixmap::fromImage(image));
+
         for (int row = 0; row < ui->tableWidget->rowCount(); ++row) {
             QTableWidgetItem* filePathItem = ui->tableWidget->item(row, 0);
             QTableWidgetItem* titleItem = ui->tableWidget->item(row, 1);
@@ -294,7 +292,7 @@ void MainWindow::retrieveMetadata()
 
             if (filePathItem && titleItem && artistItem) {
                 if (filePathItem->text() == filePath && titleItem->text() == title && artistItem->text() == artist) {
-                    return; // Песня уже существует в таблице, выходим из функции
+                    return;
                 }
             }
         }
@@ -346,6 +344,8 @@ void MainWindow::playTrack()
         ui->tableWidget->selectRow(ui->tableWidget->currentRow());
     }
     QTableWidgetItem *item = ui->tableWidget->item(ui->tableWidget->currentRow(), 0);
+    ui->track_label->setText(ui->tableWidget->item(ui->tableWidget->currentRow(), 1)->text());
+    ui->author_label->setText(ui->tableWidget->item(ui->tableWidget->currentRow(), 2)->text());
     if (!item) {
         return;
     }
@@ -417,6 +417,19 @@ void MainWindow::repeatBtn_clicked() // wtf
 void MainWindow::mixBtn_clicked()
 {
     m_player.set_mix();
+}
+
+void MainWindow::set_cover()
+{
+    QMediaMetaData data = m_player.get_metadata();
+    QVariant cover = data[data.ThumbnailImage];
+    if (cover.isNull()) {
+        QIcon empty_cover(QString::fromUtf8(":/new/prefix1/resources/question-mark.svg"));
+        ui->cover->setPixmap(empty_cover.pixmap(QSize(50, 50)));
+    } else {
+        QImage image = cover.value<QImage>();
+        ui->cover->setPixmap(QPixmap::fromImage(image).scaled(QSize(50, 50)));
+    }
 }
 
 void MainWindow::stopTrackBtn_clicked()

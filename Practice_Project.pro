@@ -41,3 +41,5 @@ FORMS += \
 
 RESOURCES += \
     MainWindowResources.qrc
+
+DISTFILES +=

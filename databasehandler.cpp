@@ -3,14 +3,12 @@
 
 DataBaseHandler::DataBaseHandler() {}
 
-// Функция возвращает ссылку на единственный экземпляр класса
 DataBaseHandler& DataBaseHandler::instance()
 {
     static DataBaseHandler instance;
     return instance;
 }
 
-// Функция присоединения к базе данных
 void DataBaseHandler::connectToDataBase(QSqlDatabase& db)
 {
     if (!db.open()) {
@@ -20,7 +18,6 @@ void DataBaseHandler::connectToDataBase(QSqlDatabase& db)
     qDebug() << "Database connected!";
 }
 
-// Функция создает базу данных
 void DataBaseHandler::createDataBase()
 {
     db = QSqlDatabase::addDatabase("QSQLITE");
@@ -30,7 +27,7 @@ void DataBaseHandler::createDataBase()
     db.setDatabaseName(fullPath);
     connectToDataBase(db);
     QSqlQuery query;
-    // Если таблицы Playlists нет, создаем её
+
     if (!db.tables().contains("Playlists")) {
         query.exec("CREATE TABLE Playlists"
                    "(id integer primary key,"
@@ -46,8 +43,6 @@ void DataBaseHandler::createDataBase()
     db.close();
 }
 
-// Функция добавления плейлиста в таблицу
-// true - плейлист был добавлен, false - не был
 bool DataBaseHandler::addPlaylist(const QString& playlist_name)
 {
     QSqlQuery query;
@@ -70,7 +65,6 @@ bool DataBaseHandler::addPlaylist(const QString& playlist_name)
     return true;
 }
 
-// Функция удаления записи из таблицы
 void DataBaseHandler::deletePlaylist(const QString &playlist_name)
 {
     if (playlist_name != "")
@@ -89,7 +83,6 @@ void DataBaseHandler::deletePlaylist(const QString &playlist_name)
     }
 }
 
-// Функция получения списка всех плейлистов из БД
 QSqlQueryModel* DataBaseHandler::getPlaylists()
 {
     connectToDataBase(db);
@@ -101,14 +94,15 @@ QSqlQueryModel* DataBaseHandler::getPlaylists()
     return query;
 }
 
-bool DataBaseHandler::addTrack(const QString& path_value, const QString& track_name, const QString& author_value, const QString& duration_value)
+bool DataBaseHandler::addTrack(const QString& path_value, const QString& track_name,
+                               const QString& author_value, const QString& duration_value)
 {
     connectToDataBase(db);
     QSqlQuery query;
     qDebug() << "TEST: " << db.tables().contains("AllTracks");
     if (!db.tables().contains("AllTracks")) {
         qDebug() << "There is no table 'AllTracks'. Creating...";
-        if(!query.exec("CREATE TABLE AllTracks"
+        if (!query.exec("CREATE TABLE AllTracks"
                    "(id integer primary key,"
                    "path varchar(100),"
                    "track_name varchar(40),"
@@ -116,7 +110,6 @@ bool DataBaseHandler::addTrack(const QString& path_value, const QString& track_n
                    "duration integer,"
                    "id_playlist integer"
                        ")"))
-
          qDebug() << query.lastError().text();
     }
 
@@ -126,8 +119,10 @@ bool DataBaseHandler::addTrack(const QString& path_value, const QString& track_n
     artist.replace("'","''");
     qDebug() << path;
 
-    QString selectQuery = QString("SELECT * FROM AllTracks WHERE track_name='%1' AND author='%2' AND duration='%3'").arg(track_name).arg(artist).arg(duration_value);
-    QString query_text = QString("INSERT OR IGNORE INTO AllTracks(path, track_name, author, duration) VALUES ('%1', '%2', '%3', '%4')").arg(path).arg(track_name).arg(artist).arg(duration_value);
+    QString selectQuery = QString("SELECT * FROM AllTracks WHERE track_name='%1' AND author='%2' AND duration='%3'")
+            .arg(track_name, artist, duration_value);
+    QString query_text = QString("INSERT OR IGNORE INTO AllTracks(path, track_name, author, duration) "
+                                 "VALUES ('%1', '%2', '%3', '%4')").arg(path, track_name, artist, duration_value);
     query.exec(selectQuery);
     if (query.next()) {
         qDebug() << "This track already added!";
@@ -149,14 +144,12 @@ bool DataBaseHandler::addTrack(const QString& path_value, const QString& track_n
     return true;
 }
 
-// Функция получения списка всех треков из БД
 QSqlQueryModel* DataBaseHandler::getTracks()
 {
     connectToDataBase(db);
     QSqlQueryModel* query = new QSqlQueryModel();
     query->setQuery("SELECT * FROM AllTracks");
-    if(query->lastError().isValid())
-    {
+    if(query->lastError().isValid()) {
         qDebug() << "Unable to select from 'AllTracks' table: " + query->lastError().text();
     }
     return query;
@@ -165,28 +158,23 @@ QSqlQueryModel* DataBaseHandler::getTracks()
 void DataBaseHandler::deleteTrack(const QModelIndexList &selectedRows)
 {
     QString deleteQuery = "DELETE FROM AllTracks WHERE path = :path AND track_name = :track_name AND author = :author AND duration = :duration";
-    // Подготовка запроса на удаление
     QSqlQuery query;
     if (!query.prepare(deleteQuery)) {
         qDebug() << "Unable to prepare delete query: " + query.lastError().text();
         return;
     }
 
-    // Выполнение запроса для каждой выбранной строки
     foreach (const QModelIndex& index, selectedRows) {
-        // Получение данных из выбранной строки
         QString path = index.sibling(index.row(), 0).data().toString();
         QString trackName = index.sibling(index.row(), 1).data().toString();
         QString author = index.sibling(index.row(), 2).data().toString();
         QString duration = index.sibling(index.row(), 3).data().toString();
 
-        // Установка значений параметров запроса
         query.bindValue(":path", path);
         query.bindValue(":track_name", trackName);
         query.bindValue(":author", author);
         query.bindValue(":duration", duration);
 
-        // Выполнение запроса на удаление
         if (!query.exec()) {
             qDebug() << "Unable to delete from 'AllTracks' table: " + query.lastError().text();
             return;
